@@ -1,0 +1,19 @@
+name: Run tests
+
+on:
+  push:
+    branches: ['main']
+  pull_request:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    outputs:
+      strategy: ${{steps.load.outputs.strategy}}
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          repository: colcon/ci
+      - id: load
+        run: echo "strategy=$(echo $(cat strategy.json))" >> $GITHUB_OUTPUT
