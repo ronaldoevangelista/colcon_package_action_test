@@ -26,6 +26,10 @@ jobs:
     runs-on: ${{matrix.os}}
 
     steps:
+      - name: list apt-key
+        shell: bash
+        run: |
+          sudo apt-key list
       - uses: actions/checkout@v3.3.0
       - uses: ros-tooling/setup-ros@0.5.0
         with:
