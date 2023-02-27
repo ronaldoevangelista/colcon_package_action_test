@@ -1,4 +1,4 @@
-name: Run tests
+name: Run action runner
 
 on:
   push:
@@ -8,37 +8,31 @@ on:
 jobs:
   setup:
     runs-on: ubuntu-latest
-    outputs:
-      strategy: ${{steps.load.outputs.strategy}}
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-jammy-latest
 
     steps:
-      - name: Setup Checkout Colcon Action
-        uses: actions/checkout@v3.3.0
-        with:
-          repository: ronaldoevangelista/setup-colcon-action
-          ref: feat-colcon-ci
-      - id: load
-        run: echo "strategy=$(echo $(cat strategy.json))" >> $GITHUB_OUTPUT
-
-  colcon:
-    needs: [setup]
-    strategy: ${{fromJson(needs.setup.outputs.strategy)}}
-    runs-on: ${{matrix.os}}
-
-    steps:
-      - name: list apt-key
-        shell: bash
-        run: |
-          sudo apt-key list
-          sudo apt install software-properties-common
-          sudo add-apt-repository universe
-          sudo apt update && sudo apt install curl
-          sudo curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-          echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | sudo tee /etc/apt/sources.list.d/ros2.list > /dev/null
-          sudo apt update
-      - name: Setup ROS
-        uses: actions/checkout@v3.3.0
-      - uses: ros-tooling/setup-ros@0.5.0
-        with:
-          required-ros-distributions: ${{ matrix.distro }}
-      - uses: ronaldoevangelista/setup-colcon-action@feat-colcon-ci
+    - name: Build and run tests
+      id: action-ros-ci
+      uses: ros-tooling/action-ros-ci@v0.3
+      with:
+        package-name: |
+          colcon_package_action_test
+        target-ros2-distro: humble
+        colcon-defaults: |
+          {
+            "build": {
+              "cmake-args": [
+                "-DCMAKE_CXX_FLAGS=\"-Werror\"",
+                "-DBUILD_DOCS=ON"
+              ]
+            }
+          }
+      continue-on-error: true
+      shell: bash
+      run: |
+        source /opt/ros/humble/setup.bash
+        COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
+        cd ..
+        $COLCON build --paths ${{github.workspace}} --event-handlers console_direct+
+        $COLCON test --paths ${{github.workspace}} --return-code-on-test-failure --event-handlers console_direct+
