@@ -44,9 +44,7 @@ jobs:
          rosdistro: humble
          target packages:  |
            colcon_package_action_test
-         extra-cmake-args: |
-            "inclua um extra arg"
-         build-depends-repos: |
-            "repos"
+         extra-cmake-args: "inclua um extra arg"
+         build-depends-repos: "repos"
          working_dir: ${{github.workspace}} 
         
