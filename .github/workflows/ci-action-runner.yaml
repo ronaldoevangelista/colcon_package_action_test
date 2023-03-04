@@ -33,7 +33,20 @@ jobs:
       shell: bash
       run: |
         source /opt/ros/humble/setup.bash
-        COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
-        cd ..
-        $COLCON build --paths ${{github.workspace}} --event-handlers console_direct+
-        $COLCON test --paths ${{github.workspace}} --return-code-on-test-failure --event-handlers console_direct+
+#        COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
+#        cd ..
+#        $COLCON build --paths ${{github.workspace}} --event-handlers console_direct+
+#        $COLCON test --paths ${{github.workspace}} --return-code-on-test-failure --event-handlers console_direct+
+
+    - name: Build
+      uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
+      with:
+         rosdistro: humble
+         target packages:  |
+           colcon_package_action_test
+         extra-cmake-args: |
+            "inclua um extra arg"
+         build-depends-repos: |
+            "repos"
+         working_dir: ${{github.workspace}} 
+        
