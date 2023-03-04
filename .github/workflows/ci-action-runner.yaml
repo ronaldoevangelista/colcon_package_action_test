@@ -42,7 +42,7 @@ jobs:
       uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
       with:
          rosdistro: humble
-         target packages:  |
+         target-packages: |
            colcon_package_action_test
          extra-cmake-args: "inclua um extra arg"
          build-depends-repos: "repos"
