@@ -37,7 +37,6 @@ jobs:
 #        cd ..
 #        $COLCON build --paths ${{github.workspace}} --event-handlers console_direct+
 #        $COLCON test --paths ${{github.workspace}} --return-code-on-test-failure --event-handlers console_direct+
-
     - name: Build
       uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
       with:
