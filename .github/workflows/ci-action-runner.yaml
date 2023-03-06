@@ -37,12 +37,11 @@ jobs:
         skip-tests: true
         colcon-extra-args: --event-handlers console_direct+ --executor sequential
 
-    - name: Build
+    - name: Build novo
       uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
       with:
          rosdistro: humble
-         target-packages: |
-           colcon_package_action_test
+         target-packages: colcon_package_action_test
          extra-cmake-args: "inclua um extra arg"
          build-depends-repos: "repos"
          working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
