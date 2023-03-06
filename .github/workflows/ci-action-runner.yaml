@@ -40,7 +40,7 @@ jobs:
     - name: Build novo
       uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
       with:
-         rosdistro: humble
+         rosdistro:  ${{ matrix.ros }}
          target-packages: colcon_package_action_test
          extra-cmake-args: "inclua um extra arg"
          build-depends-repos: "repos"
@@ -50,16 +50,16 @@ jobs:
     - name: Tests Package
       uses: ronaldoevangelista/colcon-build-action/colcon-test@feat-setup-modules
       with:
-        rosdistro: humble
+        rosdistro:  ${{ matrix.ros }}
         target-packages: colcon_package_action_test
         extra-cmake-args: "inclua um extra arg"
         build-depends-repos: "repos"
         working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
         
     - name: Coverage
-      uses: ronaldoevangelista/colcon-build-action/colcon-test@feat-setup-modules
+      uses: ronaldoevangelista/colcon-build-action/colcon-coverage/@feat-setup-modules
       with:
-        rosdistro: humble
+        rosdistro:  ${{ matrix.ros }}
         target-packages: colcon_package_action_test
         working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
 
