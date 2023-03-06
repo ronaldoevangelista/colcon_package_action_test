@@ -26,22 +26,6 @@ jobs:
 
     name: ROS 2 ${{ matrix.ros }} on Colcon
     steps:
-    # - name: Acquiring action-ros-ci
-    #   id: action-ros-ci
-    #   uses: ros-tooling/action-ros-ci@v0.2
-    #   with:
-    #     package-name: |
-    #       colcon_package_action_test
-    #     target-ros2-distro: humble
-    #     colcon-defaults: |
-    #       {
-    #         "build": {
-    #           "cmake-args": [
-    #             "-DCMAKE_CXX_FLAGS=\"-Werror\"",
-    #             "-DBUILD_DOCS=ON"
-    #           ]
-    #         }
-    #       }
     - name: Build Package
       id: action-ros-ci
       uses: ros-tooling/action-ros-ci@v0.3
@@ -53,26 +37,6 @@ jobs:
         skip-tests: true
         colcon-extra-args: --event-handlers console_direct+ --executor sequential
 
-    - name: Tests Package
-      working-directory: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
-      shell: bash
-      run: |
-        COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
-        . /opt/ros/humble/setup.bash
-        . ./install/setup.bash
-        $COLCON test --packages-select ${{ env.PACKAGE_NAME }} --return-code-on-test-failure \
-          --event-handlers console_direct+
-        $COLCON test-result --verbose --all
-
-    # - name: Build and run tests
-    #   continue-on-error: true
-    #   shell: bash
-    #   run: |
-    #     source /opt/ros/humble/setup.bash
-#        COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
-#        cd ..
-#        $COLCON build --paths ${{github.workspace}} --event-handlers console_direct+
-#        $COLCON test --paths ${{github.workspace}} --return-code-on-test-failure --event-handlers console_direct+
     - name: Build
       uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
       with:
@@ -82,3 +46,37 @@ jobs:
          extra-cmake-args: "inclua um extra arg"
          build-depends-repos: "repos"
          working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+
+
+    - name: Tests Package
+      uses: ronaldoevangelista/colcon-build-action/colcon-test@feat-setup-modules
+      with:
+         rosdistro: humble
+         target-packages: |
+           colcon_package_action_test
+         extra-cmake-args: "inclua um extra arg"
+         build-depends-repos: "repos"
+         working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+
+
+    - name: Coverage
+      uses: ronaldoevangelista/colcon-build-action/colcon-test@feat-setup-modules
+      with:
+         rosdistro: humble
+         target-packages: |
+           colcon_package_action_test
+         working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+
+
+
+
+    # - name: Tests Package
+    #   working-directory: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+    #   shell: bash
+    #   run: |
+    #     COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
+    #     . /opt/ros/humble/setup.bash
+    #     . ./install/setup.bash
+    #     $COLCON test --packages-select ${{ env.PACKAGE_NAME }} --return-code-on-test-failure \
+    #       --event-handlers console_direct+
+    #     $COLCON test-result --verbose --all
