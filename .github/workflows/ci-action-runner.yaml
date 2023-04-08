@@ -37,7 +37,23 @@ jobs:
         colcon-defaults: |
           {
             "build": {
-              "mixin": ["coverage-gcc"]
+              "mixin": ["coverage-gcc"],
+              "cmake-args": [
+                "-DCMAKE_CXX_FLAGS=-fprofile-arcs -ftest-coverage --coverage"
+              ]
             }
           }
         colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/1ddb69bedfd1f04c2f000e95452f7c24a4d6176b/index.yaml
+        working-directory: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+
+    - name: Runnning Coverage
+      working-directory: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
+      shell: bash
+      run: |
+        echo "Runnning Coverage"
+        echo "COVERAGE_INFO=$(cat ros_ws/lcov/total_coverage.info)" >> $GITHUB_OUTPUT
+        echo "COVERAGE=$(cat ros_ws/coveragepy/.coverage)" >> $GITHUB_OUTPUT
+
+
+
+#  Reading tracefile /__w/colcon_package_action_test/colcon_package_action_test/ros_ws/lcov/total_coverage.info
