@@ -32,5 +32,5 @@ jobs:
           "colcon_package_action_test"
         import-token: ${{ secrets.PAT_ACTION_USER_CIBOT }}
         target-ros2-distro: ${{ matrix.ros }}
-        skip-tests: true
+        skip-tests: false
         colcon-extra-args: --event-handlers console_direct+ --executor sequential
