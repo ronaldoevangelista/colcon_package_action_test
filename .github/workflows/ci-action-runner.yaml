@@ -22,7 +22,7 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
 
-    name: Colcon Build
+    name: Colcon build and test
     steps:
     - name: Build Package
       id: action-ros-ci
