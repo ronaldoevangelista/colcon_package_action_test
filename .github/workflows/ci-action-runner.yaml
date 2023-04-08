@@ -1,13 +1,11 @@
 name: colcon-runner-humble
 
-
 on:
   push:
     branches: ['master']
   pull_request:
 
 env:
-  PACKAGE_NAME: "colcon_package_action_test"
   REPOSITORY_NAME: ${{ github.repository }}
   CMAKE_ARGS: -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage --coverage"
 
@@ -24,53 +22,15 @@ jobs:
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
 
-    name: ROS 2 ${{ matrix.ros }} on Colcon
+    name: Colcon Build
     steps:
     - name: Build Package
       id: action-ros-ci
-      uses: ros-tooling/action-ros-ci@v0.3
+      uses: ronaldoevangelista/colcon_ci_action@master
       with:
         package-name: |
-          ${{ env.PACKAGE_NAME }}
+          "colcon_package_action_test"
         import-token: ${{ secrets.PAT_ACTION_USER_CIBOT }}
         target-ros2-distro: ${{ matrix.ros }}
         skip-tests: true
         colcon-extra-args: --event-handlers console_direct+ --executor sequential
-
-    - name: Build novo
-      uses: ronaldoevangelista/colcon-build-action/colcon-build@feat-setup-modules
-      with:
-         rosdistro:  ${{ matrix.ros }}
-         target-packages: colcon_package_action_test
-         extra-cmake-args: "inclua um extra arg"
-         build-depends-repos: "repos"
-         working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
-
-
-    - name: Tests Package
-      uses: ronaldoevangelista/colcon-build-action/colcon-test@feat-setup-modules
-      with:
-        rosdistro:  ${{ matrix.ros }}
-        target-packages: colcon_package_action_test
-        extra-cmake-args: "inclua um extra arg"
-        build-depends-repos: "repos"
-        working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
-        
-    - name: Coverage
-      uses: ronaldoevangelista/colcon-build-action/colcon-coverage/@feat-setup-modules
-      with:
-        rosdistro:  ${{ matrix.ros }}
-        target-packages: colcon_package_action_test
-        working_dir: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
-
-
-    # - name: Tests Package
-    #   working-directory: ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}
-    #   shell: bash
-    #   run: |
-    #     COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
-    #     . /opt/ros/humble/setup.bash
-    #     . ./install/setup.bash
-    #     $COLCON test --packages-select ${{ env.PACKAGE_NAME }} --return-code-on-test-failure \
-    #       --event-handlers console_direct+
-    #     $COLCON test-result --verbose --all
