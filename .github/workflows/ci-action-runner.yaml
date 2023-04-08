@@ -34,3 +34,10 @@ jobs:
         target-ros2-distro: ${{ matrix.ros }}
         skip-tests: false
         colcon-extra-args: --event-handlers console_direct+ --executor sequential
+        colcon-defaults: |
+          {
+            "build": {
+              "mixin": ["coverage-gcc"]
+            }
+          }
+        colcon-mixin-repository: https://raw.githubusercontent.com/colcon/colcon-mixin-repository/1ddb69bedfd1f04c2f000e95452f7c24a4d6176b/index.yaml
