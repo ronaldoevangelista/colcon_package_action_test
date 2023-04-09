@@ -5,10 +5,6 @@ on:
     branches: ['master']
   pull_request:
 
-env:
-  REPOSITORY_NAME: ${{ github.repository }}
-  CMAKE_ARGS: -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage --coverage"
-
 jobs:
   setup:
     strategy:
@@ -33,7 +29,7 @@ jobs:
         import-token: ${{ secrets.PAT_ACTION_USER_CIBOT }}
         target-ros2-distro: ${{ matrix.ros }}
         skip-tests: false
-        colcon-extra-args: --event-handlers console_direct+ --executor sequential
+        colcon-extra-args: --executor sequential
         colcon-defaults: |
           {
             "build": {
@@ -50,11 +46,15 @@ jobs:
       shell: bash
       run: |
         echo "Runnning Coverage"
-        echo "LS_INFO=$(ls -alF)" >> $GITHUB_OUTPUT
-        echo "PWD_INFO=$(pwd)" >> $GITHUB_OUTPUT
-        echo "COVERAGE_INFO=$(cat ros_ws/lcov/total_coverage.info)" >> $GITHUB_OUTPUT
-        echo "COVERAGE=$(cat ros_ws/coveragepy/.coverage)" >> $GITHUB_OUTPUT
+        echo "steps_INFO=${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}" >> $GITHUB_OUTPUT
+    - run: find ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name  }}/build -name "*.gcda" | grep -q "."
+
+
+  # echo "LS_INFO=$(ls -alF)" >> $GITHUB_OUTPUT
+  # echo "PWD_INFO=$(pwd)" >> $GITHUB_OUTPUT
+  # echo "COVERAGE_INFO=$(cat ros_ws/lcov/total_coverage.info)" >> $GITHUB_OUTPUT
+  # echo "COVERAGE=$(cat ros_ws/coveragepy/.coverage)" >> $GITHUB_OUTPUT
 
   # Reading tracefile /__w/colcon_package_action_test/colcon_package_action_test/ros_ws/lcov/total_coverage.info
   # Reading tracefile /__w/colcon_package_action_test/colcon_package_action_test/ros_ws/build/colcon_package_action_test/coverage.info
-#  Reading tracefile /__w/colcon_package_action_test/colcon_package_action_test/ros_ws/lcov/total_coverage.info
+  #  Reading tracefile /__w/colcon_package_action_test/colcon_package_action_test/ros_ws/lcov/total_coverage.info
