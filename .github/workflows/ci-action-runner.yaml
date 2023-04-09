@@ -35,7 +35,8 @@ jobs:
             "build": {
               "mixin": ["coverage-gcc"],
               "cmake-args": [
-                "-DCMAKE_CXX_FLAGS=-fprofile-arcs -ftest-coverage --coverage"
+                "-DCMAKE_CXX_FLAGS=-fprofile-arcs -ftest-coverage --coverage",
+                "-DCMAKE_BUILD_TYPE=Debug"
               ]
             }
           }
@@ -47,7 +48,7 @@ jobs:
       run: |
         echo "Runnning Coverage"
         echo "steps_INFO=${{ steps.action-ros-ci.outputs.ros-workspace-directory-name }}" >> $GITHUB_OUTPUT
-    - run: find ${{ steps.action-ros-ci.outputs.ros-workspace-directory-name  }}/build -name "*.gcda" | grep -q "."
+    - run: find ./build -name "*.gcda" | grep -q "."
 
 
   # echo "LS_INFO=$(ls -alF)" >> $GITHUB_OUTPUT
