@@ -10,9 +10,9 @@ on:
     branches: ['master']
   pull_request:
 
-# defaults:
-#   run:
-#     working-directory: /__w/ros_ws/src
+defaults:
+  run:
+    working-directory: /__w/ros_ws/src
     
 jobs:
   setup:
@@ -38,7 +38,6 @@ jobs:
         shell: bash
         run: |
           echo "get dependencies..."
-      - uses: ./__w/ros_ws/src
       - name: Setup Checkout autoproj
         uses: actions/checkout@v3
         with:
