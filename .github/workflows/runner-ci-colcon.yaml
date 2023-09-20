@@ -24,23 +24,22 @@ jobs:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
 
     steps:
-      - name: Get Dependencies
-        shell: bash
-        run: |
-          echo "get dependencies..."
       - name: Create workspace directory
         shell: bash
         run: |
-          mkdir -p /__w/ros_ws 
+          mkdir -p /__w/ros_ws/src 
           cd  /__w/ros_ws
           echo "$pwd"
+      - name: Install dependencies 
+        shell: bash
+        run: |
+          echo "get dependencies..."
       - name: Setup Checkout autoproj
         uses: actions/checkout@v3
         with:
           repository: ronaldoevangelista/colcon_package_action_test
           token: ${{ secrets.GITHUB_TOKEN }}
-          ref: ${{ github.head_ref }}'
-          working-directory: /__w/ros_ws
+          ref: ${{ github.head_ref }}
       - name: Show workspace directory
         working-directory: /__w/ros_ws
         shell: bash
