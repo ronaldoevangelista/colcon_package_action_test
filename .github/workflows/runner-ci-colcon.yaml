@@ -38,7 +38,7 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: ronaldoevangelista/colcon_package_action_test
-          ssh-key: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           ref: ${{ github.head_ref }}'
           working-directory: /__w/ros_ws
       - name: Show workspace directory
