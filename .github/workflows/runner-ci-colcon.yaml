@@ -9,11 +9,7 @@ on:
   push:
     branches: ['master']
   pull_request:
-
-defaults:
-  run:
-    working-directory: /__w/ros_ws/src
-    
+   
 jobs:
   setup:
     name: Setup ROS Runner CI
