@@ -33,11 +33,11 @@ jobs:
         run: |
           mkdir -p /__w/ros_ws 
           cd  /__w/ros_ws
-          echo "dir=$($pwd)" >> $GITHUB_OUTPUT
+          echo $pwd
       - name: Show workspace directory
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          echo "pwd=$($pwd)" >> $GITHUB_OUTPUT
-          echo "ls=$(ls -laF)" >> $GITHUB_OUTPUT
+          echo $pwd
+          echo ls -laF
     
