@@ -34,12 +34,19 @@ jobs:
           mkdir -p /__w/ros_ws 
           cd  /__w/ros_ws
           echo "$pwd"
+      - name: Setup Checkout autoproj
+        uses: actions/checkout@v3
+        with:
+          repository: ronaldoevangelista/colcon_package_action_test
+          ssh-key: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref }}'
+          working-directory: /__w/ros_ws
       - name: Show workspace directory
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          echo "$(`pwd`)"
-          echo "$(`ls -laF`)"
+          echo "$(pwd)"
+          echo "$(ls -laF)"
           echo "directory... $(pwd)"
       - uses: ros-tooling/setup-ros@v0.7
         with:
@@ -48,6 +55,6 @@ jobs:
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          /usr/bin/bash -c rosdep update --include-eol-distros
+          rosdep update
     
 
