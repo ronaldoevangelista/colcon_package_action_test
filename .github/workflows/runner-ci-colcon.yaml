@@ -38,6 +38,6 @@ jobs:
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          echo $pwd
-          echo ls -laF
-    
+          echo $(`pwd`)
+          echo $(`ls -laF`)
+          echo "directory... $(pwd)"
