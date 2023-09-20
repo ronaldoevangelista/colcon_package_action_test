@@ -32,11 +32,10 @@ jobs:
         shell: bash
         run: |
           mkdir -p /__w/ros_ws 
-          echo $pwd
+          echo $(`$pwd`)
       - name: Show workspace directory
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          echo $pwd
-          echo $(ls -l1)
+          echo $(`$pwd`) && echo $(`ls -l1`)
     
