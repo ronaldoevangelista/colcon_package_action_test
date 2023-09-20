@@ -24,16 +24,22 @@ jobs:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
 
     steps:
-      - name: Create workspace directory
+      - name: Mapping URLS to use the token
+        env:
+          TF_MODULES_TOKENS: ${{ steps.generate_token.outputs.token_dict }}
+      - name: Create Workspace Directory
         shell: bash
         run: |
           mkdir -p /__w/ros_ws/src 
-          cd  /__w/ros_ws
-          echo "$pwd"
-      - name: Install dependencies 
+      - name: Clone package and dependencies 
         shell: bash
         run: |
-          echo "get dependencies..."
+          rm -rf /tmp/dependencies.repo
+          curl -H \
+            "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" \
+            https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
+            -o /tmp/dependencies.repo
+            echo $(cat /tmp/dependencies.repo)
       - name: Setup Checkout autoproj
         uses: actions/checkout@v3
         with:
