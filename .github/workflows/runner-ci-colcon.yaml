@@ -38,6 +38,6 @@ jobs:
         working-directory: /__w/ros_ws
         shell: bash
         run: |
-          echo "dir=$($pwd)" >> $GITHUB_OUTPUT
-          echo "ls=$( ls -laF )" >> $GITHUB_OUTPUT
+          echo "pwd=$($pwd)" >> $GITHUB_OUTPUT
+          echo "ls=$(ls -laF)" >> $GITHUB_OUTPUT
     
