@@ -28,7 +28,7 @@ jobs:
         shell: bash
         run: |
           mkdir -p /__w/ros_ws/src
-      - name: Clone package and dependencies 
+      - name: Clone Package and Dependencies 
         shell: bash
         run: |
           rm -rf /tmp/dependencies.repos
@@ -37,17 +37,22 @@ jobs:
             https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
             -o /tmp/dependencies.repos
             echo $(cat /tmp/dependencies.repos)
-      - name: Set the value
+      - name: Processing Dependencies
         shell: bash
         run: |
           AWK_OUTPUT=$(awk '/url:/ {printf "%s,", $2}' /tmp/dependencies.repos)
-          echo "Updated value is $AWK_OUTPUT"
           echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
-      - name: Show the updated value
+      - name: Mapping URLS to use the token
+        shell: bash
         run: |
-          echo "Show AWK_OUTPUT"
-          echo ${{ env.AWK_OUTPUT }}
-          echo "Updated value is  ${{ env.AWK_OUTPUT }} "
+          for module_name in ${{ env.AWK_OUTPUT }}
+            do
+             echo "${module_name}" | sed 's#https://github.com/${{ github.repository_owner }}/##'   
+          done
       - name: Test
-        run: echo $AWK_OUTPUT
+        run: |
+          echo ${{ env.AWK_OUTPUT }}
           echo "final"
+
+
+          
