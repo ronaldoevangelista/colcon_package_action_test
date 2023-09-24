@@ -5,5 +5,5 @@ repositories:
     version: master
   colcon_package_action_test:
     type: git
-    url: https://github.com/ronaldoevangelista/colcon_package_action_test/.git
+    url: https://github.com/ronaldoevangelista/colcon_package_action_test.git
     version: master
