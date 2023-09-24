@@ -53,7 +53,7 @@ jobs:
              PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
              PACKAGE_NAME=$(echo $PACKAGE | sed 's/\.git$//')
              echo "package : $PACKAGE_NAME"
-             git clone https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${PACKAGE_NAME}.git
+             git clone https://oauth2:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${PACKAGE_NAME}.git
           done
       - name: Test
         working-directory: /__w/ros_ws/src
