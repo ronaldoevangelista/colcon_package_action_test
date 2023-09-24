@@ -51,9 +51,11 @@ jobs:
           for module_name in ${TOKENS[@]}
             do
              PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
-             PACKAGE_NAME=$(echo $PACKAGE | sed 's/\.git$//')
+             REPOSITORY_NAME=$(echo $PACKAGE | sed 's/\.git$//')
+             echo "package : $REPOSITORY_NAME"
+             PACKAGE_NAME=$(echo "$REPOSITORY_NAME" | sed 's/npd-br-jiro-//; s/-/_/g')
              echo "package : $PACKAGE_NAME"
-             git clone https://oauth2:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${PACKAGE_NAME}.git
+             git clone https://oauth2:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${REPOSITORY_NAME}.git $PACKAGE_NAME
           done
       - name: Test
         working-directory: /__w/ros_ws/src
