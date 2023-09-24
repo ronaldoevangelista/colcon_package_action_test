@@ -45,7 +45,9 @@ jobs:
       - name: Mapping URLS to use the token
         shell: bash
         run: |
-          for module_name in ${{ env.AWK_OUTPUT }}
+          IFS=','
+          read -ra TOKENS <<< ${{ env.AWK_OUTPUT }}
+          for module_name in ${TOKENS[@]}
             do
              echo "${module_name}" | sed 's#https://github.com/${{ github.repository_owner }}/##'   
           done
