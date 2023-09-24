@@ -40,7 +40,7 @@ jobs:
       - name: Set the value
         shell: bash
         run: |
-          AWK_OUTPUT=$(awk '/url:/ {print $2 ","}'  /tmp/dependencies.repos)
+          AWK_OUTPUT=$(awk '/url:/ {printf "%s,", $2}' /tmp/dependencies.repos)
           echo "Updated value is $AWK_OUTPUT"
           echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
       - name: Show the updated value
