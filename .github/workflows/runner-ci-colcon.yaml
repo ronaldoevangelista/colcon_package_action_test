@@ -9,7 +9,7 @@ on:
   push:
     branches: ['master']
   pull_request:
-   
+ 
 jobs:
   setup:
     name: Setup ROS Runner CI
@@ -27,18 +27,4 @@ jobs:
       - name: Create Workspace Directory
         shell: bash
         run: |
-          mkdir -p /__w/ros_ws/src 
-      - name: Clone package and dependencies 
-        shell: bash
-        run: |
-          rm -rf /tmp/dependencies.repos
-          curl -H \
-            "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" \
-            https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
-            -o /tmp/dependencies.repos
-            echo $(cat /tmp/dependencies.repos)
-        env:
-          TF_MODULES_TOKENS: $(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)
-
-    
-
+          mkdir -p /__w/ros_ws/src
