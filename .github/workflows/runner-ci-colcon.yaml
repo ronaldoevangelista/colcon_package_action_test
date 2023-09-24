@@ -39,14 +39,15 @@ jobs:
             echo $(cat /tmp/dependencies.repos)
       - name: Executar comando awk e armazenar a saída em uma variável
         id: awk-output
-        run: echo "$(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)"
-
+        run: |
+          echo "$(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)"
+          echo "DEPENDENCIES_MODULES=$(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)" >> $GITHUB_ENV
       - name: Exibir saída do awk
-        run: echo "A saída do awk é ${{ steps.awk-output.stdout }}"
+        run: echo "A saída do awk é $DEPENDENCIES_MODULES"
       - name: Mapping URLS to use the token
         shell: bash
         run: |
-          for module_name in $TF_MODULES_TOKENS
+          for module_name in $DEPENDENCIES_MODULES
             do
             echo "${module_name}" | sed 's#https://github.com/${{ github.repository_owner }}/##'
           done
