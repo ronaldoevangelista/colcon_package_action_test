@@ -44,7 +44,10 @@ jobs:
           echo "Updated value is $AWK_OUTPUT"
           echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
       - name: Show the updated value
-        run: echo "Updated value is $AWK_OUTPUT"
+        run: |
+          echo "Show AWK_OUTPUT"
+          echo ${{ env.AWK_OUTPUT }}
+          echo "Updated value is  ${{ env.AWK_OUTPUT }} "
       - name: Test
         run: echo $AWK_OUTPUT
           echo "final"
