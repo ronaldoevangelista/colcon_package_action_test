@@ -40,7 +40,7 @@ jobs:
         env: 
             TF_MODULES_TOKENS: $(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)
       - name: Print
-        run: echo "${{ TF_MODULES_TOKENS }}"
+        run: echo "print value $TF_MODULES_TOKENS"
       - name: Mapping URLS to use the token
         shell: bash
         run: |
