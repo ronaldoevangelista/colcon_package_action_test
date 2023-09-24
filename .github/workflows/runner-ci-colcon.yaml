@@ -52,9 +52,7 @@ jobs:
             do
              PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
              REPOSITORY_NAME=$(echo $PACKAGE | sed 's/\.git$//')
-             echo "package : $REPOSITORY_NAME"
              PACKAGE_NAME=$(echo "$REPOSITORY_NAME" | sed 's/npd-br-jiro-//; s/-/_/g')
-             echo "package : $PACKAGE_NAME"
              git clone https://oauth2:${{ secrets.PAT_GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${REPOSITORY_NAME}.git $PACKAGE_NAME
           done
       - name: Test
@@ -63,6 +61,20 @@ jobs:
         run: |
           echo ${{ env.AWK_OUTPUT }}
           echo "$(ls -laF ./*)"
-          echo "final"
+      - uses: ros-tooling/setup-ros@v0.7
+        with:
+          required-ros-distributions: ${{ matrix.distro }}             
+      - name: rosdep update
+        working-directory: /__w/ros_ws
+        shell: bash
+        run: |
+          rosdep update
+      - name: Running Colcon Build
+        working-directory:  /__w/ros_ws/
+        shell: bash
+        run: |
+          COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
+          package_path=$($COLCON list --paths-only --packages-up-to colcon_package_action_test)
+          rosdep install -r --from-paths $package_path --ignore-src --skip-keys 'rti-connext-dds-5.3.1 ' --rosdistro  ${{ matrix.distro }} -y
 
           
