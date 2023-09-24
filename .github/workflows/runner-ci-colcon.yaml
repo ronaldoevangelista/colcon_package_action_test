@@ -38,9 +38,11 @@ jobs:
             -o /tmp/dependencies.repos
             echo $(cat /tmp/dependencies.repos)
       - name: Set the value in $GITHUB_ENV
-        run: echo "MY_AWK_OUTPUT=$(awk '/url:/ {print $2 }' /tmp/dependencies.repos)" >> $GITHUB_ENV
+        run: |
+          AWK_OUTPUT=$(awk '/url:/ {print $2 }' /tmp/dependencies.repos)
+          echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
       - name: Show the updated value
-        run: echo "Updated value is $MY_AWK_OUTPUT"
+        run: echo "Updated value is $AWK_OUTPUT"
       - name: Mapping URLS to use the token
         shell: bash
         run: |
