@@ -42,7 +42,8 @@ jobs:
         run: |
           AWK_OUTPUT=$(awk '/url:/ {printf "%s,", $2}' /tmp/dependencies.repos)
           echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
-      - name: Mapping URLS to use the token
+      - name: Mapping URLS and Clone Packages
+        working-directory: /__w/ros_ws/src
         shell: bash
         run: |
           IFS=','
@@ -52,11 +53,14 @@ jobs:
              PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
              PACKAGE_NAME=$(echo $PACKAGE | sed 's/\.git$//')
              echo "package : $PACKAGE_NAME"
+             git clone https://oauth2:${{ secrets.GITHUB_TOKEN }}@github.com/${{ github.repository_owner }}/${PACKAGE_NAME}.git
           done
       - name: Test
+        working-directory: /__w/ros_ws/src
+        shell: bash     
         run: |
           echo ${{ env.AWK_OUTPUT }}
+          echo "$(ls -laF ./*)"
           echo "final"
-
 
           
