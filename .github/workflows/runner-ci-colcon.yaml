@@ -37,16 +37,16 @@ jobs:
             https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
             -o /tmp/dependencies.repos
             echo $(cat /tmp/dependencies.repos)
-      - name: Set the value in $GITHUB_ENV
+      - name: Set the value
         run: |
-          AWK_OUTPUT=$(awk '/url:/ {print $2 }' /tmp/dependencies.repos)
+          AWK_OUTPUT=$(awk '/url:/ {print $2 ","}'  /tmp/dependencies.repos)
           echo "AWK_OUTPUT=$AWK_OUTPUT" >> $GITHUB_ENV
       - name: Show the updated value
         run: echo "Updated value is $AWK_OUTPUT"
       - name: Mapping URLS to use the token
         shell: bash
         run: |
-          for module_name in $DEPENDENCIES_MODULES
+          for module_name in $AWK_OUTPUT
             do
             echo "${module_name}" | sed 's#https://github.com/${{ github.repository_owner }}/##'
           done
