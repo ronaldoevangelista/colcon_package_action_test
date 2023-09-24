@@ -24,9 +24,6 @@ jobs:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
 
     steps:
-      - name: Mapping URLS to use the token
-        env:
-          TF_MODULES_TOKENS: ${{ steps.generate_token.outputs.token_dict }}
       - name: Create Workspace Directory
         shell: bash
         run: |
@@ -34,12 +31,19 @@ jobs:
       - name: Clone package and dependencies 
         shell: bash
         run: |
-          rm -rf /tmp/dependencies.repo
+          rm -rf /tmp/dependencies.repos
           curl -H \
             "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" \
             https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
-            -o /tmp/dependencies.repo
-            echo $(cat /tmp/dependencies.repo)
+            -o /tmp/dependencies.repos
+            echo $(cat /tmp/dependencies.repos)
+        env:
+          TF_MODULES_TOKENS: $(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)
+      - name: Mapping URLS to use the token
+          for module_name in ${TF_MODULES_TOKENS}
+            do
+            echo "${module_name}" | sed 's#https://github.com/Oceaneering/##'
+          done
       - name: Setup Checkout autoproj
         uses: actions/checkout@v3
         with:
