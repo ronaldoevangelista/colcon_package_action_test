@@ -49,9 +49,9 @@ jobs:
           read -ra TOKENS <<< ${{ env.AWK_OUTPUT }}
           for module_name in ${TOKENS[@]}
             do
-             package=$(echo "${module_name}" | sed 's#https://github.com/${{ github.repository_owner }}/##')
-             package-name=$(echo "$package" | sed 's/\.git$//')
-             echo "package : $package-name"
+             PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
+             PACKAGE_NAME=$(echo $PACKAGE | sed 's/\.git$//')
+             echo "package : $PACKAGE_NAME"
           done
       - name: Test
         run: |
