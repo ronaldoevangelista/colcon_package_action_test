@@ -37,10 +37,12 @@ jobs:
             https://raw.githubusercontent.com/${{ github.repository }}/${{ github.head_ref }}/dependencies.repo \
             -o /tmp/dependencies.repos
             echo $(cat /tmp/dependencies.repos)
-        env: 
-            TF_MODULES_TOKENS: $(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)
-      - name: Print
-        run: echo "print value $TF_MODULES_TOKENS"
+      - name: Executar comando awk e armazenar a saída em uma variável
+        id: awk-output
+        run: echo "$(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)"
+
+      - name: Exibir saída do awk
+        run: echo "A saída do awk é ${{ steps.awk-output.stdout }}"
       - name: Mapping URLS to use the token
         shell: bash
         run: |
