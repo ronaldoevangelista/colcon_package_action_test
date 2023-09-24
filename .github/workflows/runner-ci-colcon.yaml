@@ -39,4 +39,13 @@ jobs:
             echo $(cat /tmp/dependencies.repos)
         env: 
             TF_MODULES_TOKENS: $(awk '/url:/ {print $2 ","}' /tmp/dependencies.repos)
-          
+      - name: Print
+        run: env | sort
+      - name: Mapping URLS to use the token
+        shell: bash
+        run: |
+          echo " ${{ github.repository_owner }}"
+          for module_name in ${TF_MODULES_TOKENS}
+            do
+            echo "${module_name}" | sed 's#https://github.com/ronaldoevangelista/##'
+          done
