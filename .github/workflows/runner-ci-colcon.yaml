@@ -83,5 +83,13 @@ jobs:
               --event-handlers console_direct+ \
               --executor sequential \
               --event-handlers=console_cohesion+
-
-          
+        
+      - name: Running Colcon Tests
+        working-directory:  /__w/ros_ws/
+        shell: bash
+        run: |
+          source /opt/ros/humble/setup.bash
+          colcon test --packages-select colcon_package_action_test \
+          --event-handlers=console_cohesion+ \
+          --event-handlers console_direct+ \
+          --executor sequential
