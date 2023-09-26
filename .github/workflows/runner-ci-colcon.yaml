@@ -73,9 +73,14 @@ jobs:
         working-directory:  /__w/ros_ws/
         shell: bash
         run: |
-          COLCON=$(whereis colcon | grep ":" | awk '{ split($13,a,"/"); print $2 }')
-          source /opt/ros/${{ matrix.distro }}/setup.bash
-          package_path=$($COLCON list --paths-only --packages-up-to colcon_package_action_test)
+          source /opt/ros/humble/setup.bash
+          package_path=$(colcon list --paths-only --packages-up-to colcon_package_action_test)
+          echo $package_path
           rosdep install -r --from-paths $package_path --ignore-src --skip-keys 'rti-connext-dds-5.3.1 ' --rosdistro  ${{ matrix.distro }} -y
+          colcon build --packages-select 4package_path \
+              --cmake-args \
+              -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage --coverage" \
+              -DCMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage --coverage" \
+              -DCMAKE_BUILD_TYPE="Debug"
 
           
