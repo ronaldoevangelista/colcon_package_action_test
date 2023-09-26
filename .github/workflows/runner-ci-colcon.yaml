@@ -77,10 +77,11 @@ jobs:
           package_path=$(colcon list --paths-only --packages-up-to colcon_package_action_test)
           echo $package_path
           rosdep install -r --from-paths $package_path --ignore-src --skip-keys 'rti-connext-dds-5.3.1 ' --rosdistro  ${{ matrix.distro }} -y
-          colcon build --packages-select 4package_path \
-              --cmake-args \
-              -DCMAKE_CXX_FLAGS="-fprofile-arcs -ftest-coverage --coverage" \
-              -DCMAKE_C_FLAGS="-fprofile-arcs -ftest-coverage --coverage" \
-              -DCMAKE_BUILD_TYPE="Debug"
+          package_list=$(colcon list --names-only | tr '\n' ' ')
+          echo $package_list
+          colcon build --symlink-install --packages-up-to $package_list \
+              --event-handlers console_direct+ \
+              --executor sequential \
+              --event-handlers=console_cohesion+
 
           
