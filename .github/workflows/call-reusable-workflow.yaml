@@ -9,7 +9,7 @@ on:
 
 jobs:
   job1:
-    uses: octo-org/example-repo/.github/workflows/reusable-workflow-1.yaml@feat-resuable-workflows
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/reusable-workflow-1.yaml@feat-resuable-workflows
 
   job2:
     runs-on: ubuntu-latest
