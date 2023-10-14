@@ -46,6 +46,6 @@ jobs:
         id:  processing
         shell: bash
         run: |
-          REPOSITORY_PACKAGE_VALUE=$(grep -oP '<name>\K[^<]+' package.xml)
+          REPOSITORY_PACKAGE_VALUE=$(grep -oP '<name>\K[^<]+' /tmp/package.xml)
           REPOSITORY_PACKAGE_NAME=$(echo "$REPOSITORY_PACKAGE_VALUE" | sed 's/,$//')
           echo "package-name=$REPOSITORY_PACKAGE_NAME" >> $GITHUB_OUTPUT
