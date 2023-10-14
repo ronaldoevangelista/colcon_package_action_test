@@ -1,0 +1,51 @@
+
+name: action-extract-package-name.=
+on:
+  workflow_call:
+    secrets:
+      SECRET_GITHUB_TOKEN:
+        description: ''
+        required: true
+    inputs:
+      repository-name:
+        required: true
+        type: string
+        description: ''
+        default: ${{ github.repository }}
+      head-ref:
+        required: true
+        type: string
+        description: ''
+        default: ${{ github.head_ref }}
+    outputs:
+      package-name:
+        description: "colcon package name"
+        value: ${{ jobs.job.outputs.output-package }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    outputs:
+      output-package: ${{ steps.mapping.outputs.package-name}}
+    steps:
+      - name: downloading
+        shell: bash
+        run: |
+          rm -rf /tmp/package.xml
+          curl -H \
+            "Authorization: token  ${{ secrets.SECRET_GITHUB_TOKEN }}" \
+            https://raw.githubusercontent.com/${{ inputs.repository-name }}/${{ inputs.head-ref }}/package.xml \
+            -o /tmp/package.xml
+            echo $(cat /tmp/package.xml)
+
+      - name: processing
+        id:  processing
+        shell: bash
+        run: |
+          REPOSITORY_PACKAGE_VALUE=$(grep -oP '<name>\K[^<]+' package.xml)
+          REPOSITORY_PACKAGE_NAME=$(echo "$REPOSITORY_PACKAGE_VALUE" | sed 's/,$//')
+          echo "package-name=$REPOSITORY_PACKAGE_NAME" >> $GITHUB_OUTPUT
