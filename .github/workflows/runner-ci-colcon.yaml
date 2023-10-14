@@ -8,9 +8,9 @@ name: runner-ci-colcon
 
 on:
     push:
-      branches: [ "**" ]
-    pull_request:
       branches: [ master ]
+
+
 env:
   BUILD_PACKAGE_NAME: "colcon_package_action_test"
 
