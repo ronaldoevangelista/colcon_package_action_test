@@ -30,7 +30,7 @@ jobs:
   job:
     runs-on: ubuntu-latest
     outputs:
-      output-package: ${{ steps.mapping.outputs.package-name}}
+      output-package: ${{ steps.processing.outputs.package-name}}
     steps:
       - name: downloading
         shell: bash
