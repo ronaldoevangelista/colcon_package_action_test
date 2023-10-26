@@ -36,6 +36,8 @@ jobs:
       - name: Clone Package and Dependencies
         shell: bash
         run: |
+          github_head_ref=$(echo ${{ github.head_ref}}:-master )
+          echo "$github_head_ref"
           rm -rf /tmp/dependencies.repos
           curl -H \
             "Authorization: token  ${{ secrets.GITHUB_TOKEN }}" \
