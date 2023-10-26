@@ -8,7 +8,7 @@ name: runner-ci-colcon
 
 on:
     push:
-      branches: [ master ]
+      branches: [ * ]
 
 
 env:
