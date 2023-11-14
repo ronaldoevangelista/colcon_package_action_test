@@ -1,5 +1,4 @@
 name: colcon-runner-humble
-
 on:
   push:
     branches: ['master']
