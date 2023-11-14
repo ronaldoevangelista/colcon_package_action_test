@@ -1,0 +1,9 @@
+repositories:
+  gazebo_tank_plugin:
+    type: git
+    url: https://github.com/ronaldoevangelista/gazebo_tank_plugin.git
+    version: master
+  colcon_package_action_test:
+    type: git
+    url: https://github.com/ronaldoevangelista/colcon_package_action_test.git
+    version: master
