@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter: ${{ split(inputs.lint-list, ' ') }}
+        linter: ["${{ split(inputs.lint-list, ' ') }}"]
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
