@@ -16,7 +16,7 @@ on:
         required: true
         type: string
         description: ''
-        default: ${{ github.head_ref }}
+        default: ${{ github.head_ref:-"master" }}
     outputs:
       package-name:
         description: "colcon package name"
