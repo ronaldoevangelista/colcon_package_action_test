@@ -51,7 +51,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        linter: ${{ split(env.LINT_LIST, ', ') }}
+        linter: 
+          - $(echo "cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint" | tr ',' '\n -')
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
