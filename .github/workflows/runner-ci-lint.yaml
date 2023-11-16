@@ -32,7 +32,12 @@ on:
         type: string
         description: ''
         default: ''
-
+      lint-list:
+        required: true
+        type: string
+        description: ''
+        default: ''
+        
 defaults:
   run:
     shell: bash
@@ -46,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter:  [cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint]
+        linter:  ["${{ inputs.lint-list }}"]
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
