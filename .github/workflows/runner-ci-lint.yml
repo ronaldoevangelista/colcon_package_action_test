@@ -49,7 +49,7 @@ jobs:
         linter:  [cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint]
         distro:  [humble]
         ubuntu:  [jammy]
-        package: [ ${{ inputs.package-name }} ]
+        package: ["${{ inputs.package-name }}"]
     runs-on: ubuntu-latest
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
