@@ -67,4 +67,4 @@ jobs:
         linter: ${{ matrix.linter }}
         distribution: ${{ matrix.distro }}
         package-name: ${{ matrix.package }}
-        arguments: ${{ env.LINT_ARGUMENTS }
+        arguments: ${{ env.LINT_ARGUMENTS }}
