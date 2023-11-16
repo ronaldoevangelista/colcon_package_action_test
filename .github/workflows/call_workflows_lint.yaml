@@ -24,7 +24,7 @@ jobs:
     uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-extract-package-name.yaml@feat-resuable-workflows
     with:
       repository-name: ${{ github.repository }}
-      head-ref:  ${{ github.head_ref }}
+      head-ref: "feat-resuable-workflows"
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
