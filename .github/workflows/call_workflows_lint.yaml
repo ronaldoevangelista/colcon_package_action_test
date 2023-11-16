@@ -34,7 +34,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/runner-ci-lint.ymll@feat-resuable-workflows
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/runner-ci-lint.yaml@feat-resuable-workflows
     with:
       repository-name: "${{ github.repository }}"
       package-name: "${{ needs.setup-package-name.outputs.package-name }}"
