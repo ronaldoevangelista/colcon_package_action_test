@@ -51,7 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        linter:  ['${{ fromJSON(inputs.lint-list.linters ) }}']
+        linter:  ['${{ fromJSON(inputs.lint-list) }}']
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
