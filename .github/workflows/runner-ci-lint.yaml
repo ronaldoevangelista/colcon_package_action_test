@@ -43,7 +43,6 @@ defaults:
     
 env:
   AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: true
-  LINT_LIST: $(echo "${{fromJson(inputs.lint-list)}}" | jq -r '.linters[]')
   
 jobs:
   ament_lint_general:
@@ -51,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        linter:  ['${{ env.LINT_LIST }}']
+        linter:  [ cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint ]
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
