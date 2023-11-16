@@ -38,13 +38,6 @@ jobs:
     with:
       repository-name: "${{ github.repository }}"
       package-name: "${{ needs.setup-package-name.outputs.package-name }}"
-      lint-list: |
-         - cppcheck
-         - cpplint
-         - flake8
-         - lint_cmake
-         - pep257
-         - uncrustify
-         - xmllint
+      lint-list: "cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint"
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
