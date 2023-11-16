@@ -36,22 +36,22 @@ on:
         required: true
         type: string
         description: ''
-        default: '['']'
+        default: ''
 defaults:
   run:
     shell: bash
     
 env:
   AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: true
-  LINT_LIST: ${{ inputs.lint-list }}
-
+  LINT_LIST: $(echo "${{fromJson(inputs.lint-list)}}" | jq -r '.linters[]')
+  
 jobs:
   ament_lint_general:
     name: ament_${{ matrix.linter }}
     strategy:
       fail-fast: false
       matrix: 
-        linter:  ['${{ fromJSON(inputs.lint-list) }}']
+        linter:  ['${{ env.LINT_LIST }}']
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
