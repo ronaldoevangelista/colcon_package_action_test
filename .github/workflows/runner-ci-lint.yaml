@@ -43,6 +43,7 @@ defaults:
     
 env:
   AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: true
+  LINT_LIST: ${{ inputs.lint-list }}
 
 jobs:
   ament_lint_general:
@@ -50,9 +51,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix: 
-        linter:
-          - 
-            ${{ inputs.lint-list }}
+        linter: ${{ split(env.LINT_LIST, ', ') }}
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
