@@ -69,7 +69,14 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter:  ${{ needs.convert-lint-list.outputs.lint-list }}
+        linter:
+          - cppcheck
+          - cpplint
+          - flake8
+          - lint_cmake
+          - pep257
+          - uncrustify
+          - xmllint
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
