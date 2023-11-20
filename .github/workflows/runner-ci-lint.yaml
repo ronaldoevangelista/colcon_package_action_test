@@ -40,17 +40,17 @@ on:
 defaults:
   run:
     shell: bash
-    
+
 env:
   AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: true
-  
+
 jobs:
   ament_lint_general:
     name: ament_${{ matrix.linter }}
     strategy:
       fail-fast: false
-      matrix: 
-        linter:  [ cppcheck, cpplint, flake8, lint_cmake, pep257, uncrustify, xmllint ]
+      matrix:
+        linter:  ${{ fromJson(inputs.lint-list) }}
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
