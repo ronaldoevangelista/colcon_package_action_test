@@ -55,7 +55,7 @@ jobs:
       id: convert-lint-list
       run: |
         echo ${{ inputs.lint-list }}
-        LINT_LIST=$(echo ${{ inputs.lint-list }} | jq -c -r '.linters | join(",")')
+        LINT_LIST=$(echo "{\"linters\": [\"${{ inputs.lint-list }}\"]}" | jq -c -r '.linters | join(",")')
         echo "github-lint-list-env=$LINT_LIST" >> $GITHUB_OUTPUT
     - name: print lint-list string to array
       run: |
