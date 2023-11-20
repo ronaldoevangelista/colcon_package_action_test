@@ -54,7 +54,11 @@ jobs:
     - name: Convert lint-list string to array
       id: convert-lint-list
       run: |
-        echo "github-lint-list-env=$(echo '${{ inputs.lint-list }}' | jq -c -r '.linters | map(.) | join(",")')" >> $GITHUB_OUTPUT
+        LINT_LIST=$(echo "${{ inputs.lint-list }}" | tr -d "'" | jq -c -r '.linters | map(.) | join(",")')
+        echo "github-lint-list-env=$LINT_LIST" >> $GITHUB_OUTPUT
+    - name: print lint-list string to array
+      run: |
+        echo ${LINT_LIST}
 
   ament_lint_general:
     name: ament_${{ matrix.linter }}
