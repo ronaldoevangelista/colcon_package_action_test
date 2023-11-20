@@ -57,7 +57,7 @@ jobs:
         IFS=', ' read -ra linterarray <<< "${{ inputs.lint-list }}"
         echo $linterarray
         LINT_LIST=$(echo "{\"linters\": [\"${{ inputs.lint-list }}\"]}" | jq -c -r '.linters | join(",")')
-        echo "github-lint-list-env=${linterarray[@]}" >> $GITHUB_OUTPUT
+        echo "github-lint-list-env=$linterarray" >> $GITHUB_OUTPUT
     - name: print lint-list string to array
       run: |
         echo ${{ steps.convert-lint-list.outputs.github-lint-list-env }}
