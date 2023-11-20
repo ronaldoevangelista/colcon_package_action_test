@@ -1,0 +1,44 @@
+
+name: runner-ci-ros-reusable
+
+on:
+  push:
+    branches: ['*']
+  pull_request:
+
+jobs:
+  setup:
+    name: setup action runner
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+  setup-package-name:
+    name: setup package name
+    needs: [setup]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-extract-package-name.yaml@feat-resuable-workflows
+    with:
+      repository-name: ${{ github.repository }}
+      head-ref: "feat-resuable-workflows"
+    secrets:
+      SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+
+  setup-ros-colcon:
+    name: setup app token
+    needs: [setup-package-name]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/runner-ci-lint.yaml@feat-resuable-workflows
+    with:
+      repository-name: "${{ github.repository }}"
+      package-name: "${{ needs.setup-package-name.outputs.package-name }}"
+      lint-list: '{"linters": ["cppcheck", "cpplint", "flake8", "lint_cmake", "pep257", "uncrustify", "xmllint"]}'
+
+    secrets:
+      SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
