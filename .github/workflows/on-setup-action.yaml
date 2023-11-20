@@ -1,45 +1,45 @@
-name: on-setup-action
+# name: on-setup-action
 
-on:
-  workflow_call:
-    inputs:
-      repository-name:
-        description: "Repository Name"
-        required: true
-        type: string
-        default: ${{ github.repository }}
-      head-ref:
-        description: "Head Branch"
-        required: true
-        type: string
-        default: ${{ github.head_ref }}
-      authorization-token:
-        description: "Authorization token"
-        required: true
-        type: string
-        default:  ${{ secrets.GITHUB_TOKEN }}
-      runner-name:
-        description: "runner name"
-        required: true
-        type: string
-        default: ""
-    outputs:
-      workspace-directory:
-        description: "Returns Workspace Directory"
-        value: ${{ jobs.setup.outputs.url-list }}
-      repository-list:
-        description: "Returns a list for accessing packages on github."
-        value: ${{ steps.setup-workspace.directory }}
+# on:
+#   workflow_call:
+#     inputs:
+#       repository-name:
+#         description: "Repository Name"
+#         required: true
+#         type: string
+#         default: ${{ github.repository }}
+#       head-ref:
+#         description: "Head Branch"
+#         required: true
+#         type: string
+#         default: ${{ github.head_ref }}
+#       authorization-token:
+#         description: "Authorization token"
+#         required: true
+#         type: string
+#         default:  ${{ secrets.GITHUB_TOKEN }}
+#       runner-name:
+#         description: "runner name"
+#         required: true
+#         type: string
+#         default: ""
+#     outputs:
+#       workspace-directory:
+#         description: "Returns Workspace Directory"
+#         value: ${{ jobs.setup.outputs.url-list }}
+#       repository-list:
+#         description: "Returns a list for accessing packages on github."
+#         value: ${{ steps.setup-workspace.directory }}
 
-jobs:
-  on-create-workspace-directory:
-    runs-on: ${{ inputs.runner-name }}
-    steps:
-      - name: Create Workspace Directory
-        id: setup-workspace
-        shell: bash
-        run: |
-          echo "$(ls -laF ./*)"
-          echo "directory=/__w/ros_ws" >> $GITHUB_ENV
-          echo "${{ inputs.repository-name }}"
-          echo "${{ inputs.head-ref }}"
+# jobs:
+#   on-create-workspace-directory:
+#     runs-on: ${{ inputs.runner-name }}
+#     steps:
+#       - name: Create Workspace Directory
+#         id: setup-workspace
+#         shell: bash
+#         run: |
+#           echo "$(ls -laF ./*)"
+#           echo "directory=/__w/ros_ws" >> $GITHUB_ENV
+#           echo "${{ inputs.repository-name }}"
+#           echo "${{ inputs.head-ref }}"
