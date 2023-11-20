@@ -15,6 +15,7 @@
 # https://hub.docker.com/r/rostooling/setup-ros-docker/tags
 
 name: action-lint
+
 on:
   workflow_call:
     secrets:
@@ -45,30 +46,41 @@ env:
   AMENT_CPPCHECK_ALLOW_SLOW_VERSIONS: true
 
 jobs:
-  ament_lint_general:
-    name: ament_${{ matrix.linter }}
-    strategy:
-      fail-fast: false
-      matrix:
-        linter:  ${{ fromJson(inputs.lint-list) }}
-        distro:  [humble]
-        ubuntu:  [jammy]
-        package: ["${{ inputs.package-name }}"]
+  convert-lint-list:
     runs-on: ubuntu-latest
-    container:
-      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
+    outputs:
+      lint-list: ${{ steps.convert-lint-list.outputs.github-lint-list-env }}
     steps:
-    -
-      if: ${{ matrix.linter == 'cpplint' || matrix.linter == 'uncrustify' }}
-      name: Set env ${{ matrix.linter }}
+    - name: Convert lint-list string to array
+      id: convert-lint-list
       run: |
-          echo "LINT_ARGUMENTS=--linelength=120" >> $GITHUB_ENV
+        echo "github-lint-list-env=$(echo '${{ inputs.lint-list }}' | jq -c -r '.linters | map(.) | join(",")')" >> $GITHUB_OUTPUT
 
-    - uses: actions/checkout@v3
-    - uses: ros-tooling/setup-ros@0.6.0
-    - uses: ros-tooling/action-ros-lint@master
-      with:
-        linter: ${{ matrix.linter }}
-        distribution: ${{ matrix.distro }}
-        package-name: ${{ matrix.package }}
-        arguments: ${{ env.LINT_ARGUMENTS }}
+  # ament_lint_general:
+  #   name: ament_${{ matrix.linter }}
+  #   needs: convert-lint-list
+  #   strategy:
+  #     fail-fast: false
+  #     matrix:
+  #       linter:  ${{fromJson(needs.convert-lint-list.outputs.lint-list)}}
+  #       distro:  [humble]
+  #       ubuntu:  [jammy]
+  #       package: ["${{ inputs.package-name }}"]
+  #   runs-on: ubuntu-latest
+  #   container:
+  #     image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
+  #   steps:
+  #   -
+  #     if: ${{ matrix.linter == 'cpplint' || matrix.linter == 'uncrustify' }}
+  #     name: Set env ${{ matrix.linter }}
+  #     run: |
+  #         echo "LINT_ARGUMENTS=--linelength=120" >> $GITHUB_ENV
+
+  #   - uses: actions/checkout@v3
+  #   - uses: ros-tooling/setup-ros@0.6.0
+  #   - uses: ros-tooling/action-ros-lint@master
+  #     with:
+  #       linter: ${{ matrix.linter }}
+  #       distribution: ${{ matrix.distro }}
+  #       package-name: ${{ matrix.package }}
+  #       arguments: ${{ env.LINT_ARGUMENTS }}
