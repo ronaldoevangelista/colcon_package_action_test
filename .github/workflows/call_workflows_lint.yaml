@@ -21,7 +21,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-extract-package-name.yaml@feat-resuable-workflows
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-extract-package-name.yaml@only-extract-lint
     with:
       repository-name: ${{ github.repository }}
       head-ref: "feat-resuable-workflows"
@@ -34,7 +34,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/runner-ci-lint.yaml@feat-resuable-workflows
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/runner-ci-lint.yaml@only-extract-lint
     with:
       repository-name: "${{ github.repository }}"
       package-name: "${{ needs.setup-package-name.outputs.package-name }}"
