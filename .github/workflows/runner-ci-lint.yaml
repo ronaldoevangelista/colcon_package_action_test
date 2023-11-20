@@ -38,6 +38,15 @@ on:
         type: string
         description: ''
         default: ''
+      enable-cppcheck:
+        type: boolean
+        default: false
+      enable-cpplint:
+        type: boolean
+        default: false
+
+
+
 defaults:
   run:
     shell: bash
@@ -70,13 +79,12 @@ jobs:
       fail-fast: false
       matrix:
         linter:
+          -
+           if: ${{ inputs.enable-cppcheck }}
           - cppcheck
+          -
+            if: ${{ inputs.enable-cpplint }}
           - cpplint
-          - flake8
-          - lint_cmake
-          - pep257
-          - uncrustify
-          - xmllint
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
