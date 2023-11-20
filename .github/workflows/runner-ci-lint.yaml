@@ -54,7 +54,8 @@ jobs:
     - name: Convert lint-list string to array
       id: convert-lint-list
       run: |
-        IFS=', ' read -ra linter-array <<< "${{ inputs.lint-list }}"
+        IFS=', ' read -ra linterarray <<< "${{ inputs.lint-list }}"
+        echo $linterarray
         echo ${{ inputs.lint-list }}
         LINT_LIST=$(echo "{\"linters\": [\"${{ inputs.lint-list }}\"]}" | jq -c -r '.linters | join(",")')
         echo "github-lint-list-env=${linter-array[@]}" >> $GITHUB_OUTPUT
