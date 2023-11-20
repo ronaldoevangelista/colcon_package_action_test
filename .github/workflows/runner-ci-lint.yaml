@@ -54,7 +54,7 @@ jobs:
     - name: Convert lint-list string to array
       id: convert-lint-list
       run: |
-        LINT_LIST=$(echo "${{ inputs.lint-list }}" | tr -d "'" | jq -c -r '.linters | map(.) | join(",")')
+        LINT_LIST=$(echo '{"linters": ["cppcheck", "cpplint", "flake8", "lint_cmake", "pep257", "uncrustify", "xmllint"]}' | jq -c -r '.linters | join(",")')
         echo "github-lint-list-env=$LINT_LIST" >> $GITHUB_OUTPUT
     - name: print lint-list string to array
       run: |
