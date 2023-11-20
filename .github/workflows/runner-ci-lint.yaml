@@ -67,7 +67,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter:  ${{fromJson(needs.convert-lint-list.outputs.lint-list)}}
+        linter:  ${{ needs.convert-lint-list.outputs.lint-list }}
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
