@@ -26,6 +26,9 @@ defaults:
   run:
     shell: bash
 
+env:
+  GITHUB_HEAD_REF_ENV: $([ -n "${{ inputs.head-ref }}" ] && echo ${{ inputs.head-ref }} || echo "master")
+
 jobs:
   job:
     runs-on: ubuntu-latest
@@ -38,7 +41,7 @@ jobs:
           rm -rf /tmp/package.xml
           curl -H \
             "Authorization: token  ${{ secrets.SECRET_GITHUB_TOKEN }}" \
-            https://raw.githubusercontent.com/${{ inputs.repository-name }}/${{ inputs.head-ref }}/package.xml \
+            https://raw.githubusercontent.com/${{ inputs.repository-name }}/${{ env.GITHUB_HEAD_REF_ENV }}/package.xml \
             -o /tmp/package.xml
             echo $(cat /tmp/package.xml)
 
