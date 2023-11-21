@@ -65,7 +65,10 @@ jobs:
         echo "github-lint-list-env=$matrix_stringifield_object" >> $GITHUB_OUTPUT
     - name: print Matrix
       run: |
-        echo "${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env ) }}"
+        parsed_json="${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env) }}"
+        echo "Parsed JSON: $parsed_json"
+
+        # echo "${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env ) }}"
 
 
   ament_lint_general:
