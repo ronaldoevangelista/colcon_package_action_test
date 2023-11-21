@@ -27,7 +27,9 @@ jobs:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
      - run: |
-        echo ${{ matrix.linter }}
+        for linter_item in ${{ matrix.linter[@] }}; do
+          echo "Linter: $linter_item"
+        done
         echo ${{ matrix.distro }}
         echo ${{ matrix.ubuntu }}
         echo ${{ matrix.package }}
