@@ -66,7 +66,7 @@ jobs:
     - name: print Matrix
       run: |
         parsed_json="${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env) }}"
-        echo "Parsed JSON: $parsed_json"
+        echo "Parsed JSON: $parsed_json.linter"
 
         # echo "${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env ) }}"
 
