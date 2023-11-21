@@ -56,19 +56,13 @@ jobs:
   convert-lint-list:
     runs-on: ubuntu-latest
     outputs:
-      lint-list: ${{ steps.convert-lint-list.outputs.github-lint-list-env }}
+      lint-list: ${{ steps.dynamic-tmatrix.outputs.github-lint-list-env }}
     steps:
-    - name: Convert lint-list string to array
-      id: convert-lint-list
+    - name: Set Dynamic Matrix
+      id: dynamic-tmatrix
       run: |
-        IFS=', ' read -ra linterarray <<< "${{ inputs.lint-list }}"
-        echo $linterarray
-        LINT_LIST=$(echo "{\"linters\": [\"${{ inputs.lint-list }}\"]}" | jq -c -r '.linters | join(",")')
-        echo "github-lint-list-env=$linterarray" >> $GITHUB_OUTPUT
-    - name: print lint-list string to array
-      run: |
-        echo ${{ steps.convert-lint-list.outputs.github-lint-list-env }}
-        echo $linter-array
+        matrix-stringified-object="{\"linter\":[{\"cppcheck\",\"cppcheck\"},{\"rucpplintn\":\"cpplint\"}]}"
+        echo "github-lint-list-env=$matrix-stringified-object" >> $GITHUB_OUTPUT
 
   ament_lint_general:
     name: ament_${{ matrix.linter }}
@@ -76,7 +70,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter: ${{ inputs.lint-list }}
+        linter:  ${{ fromJson(needs.convert-lint-list.outputs.lint-list) }}
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
