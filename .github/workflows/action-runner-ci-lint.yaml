@@ -45,8 +45,6 @@ on:
         type: boolean
         default: false
 
-
-
 defaults:
   run:
     shell: bash
@@ -78,13 +76,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter:
-          -
-           if: ${{ inputs.enable-cppcheck }}
-          - cppcheck
-          -
-            if: ${{ inputs.enable-cpplint }}
-          - cpplint
+        linter: ${{ inputs.lint-list }}
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
