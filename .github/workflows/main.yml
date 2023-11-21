@@ -27,7 +27,7 @@ jobs:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
      - run: |
-        for linter_item in ${{ matrix.linter[@] }}; do
+        for linter_item in ${{ toJson(matrix.linter) }}; do
           echo "Linter: $linter_item"
         done
         echo ${{ matrix.distro }}
