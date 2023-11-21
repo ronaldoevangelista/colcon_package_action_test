@@ -67,8 +67,9 @@ jobs:
       run: |
         parsed_json="${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env) }}"
         echo "Parsed JSON: $parsed_json.linter"
-
-        # echo "${{ fromJson(steps.dynamic-matrix.outputs.github-lint-list-env ) }}"
+        for item in "${parsed_json["linter"][@]}"; do
+          echo "Linter item: $item"
+        done
 
 
   ament_lint_general:
