@@ -1,10 +1,18 @@
 {
   "include": [
   {
-      "name": "Mario"
+      "linter": ["cppcheck", "cpplint", "flake8", "lint_cmake", "pep257", "uncrustify", "xmllint"]
   },
   {
-      "name": "Luigi"
+      "distro": "humble"
+  }
+  ,
+  {
+      "ubuntu": "jammy"
+  }
+  ,
+  {
+      "package": "logging_view_plugin"
   }
   ]
 }

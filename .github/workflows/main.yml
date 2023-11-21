@@ -26,4 +26,8 @@ jobs:
     strategy:
       matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
     steps:
-     - run: echo ${{ matrix.name }}
+     - run: |
+        echo ${{ matrix.linter }}
+        echo ${{ matrix.distro }}
+        echo ${{ matrix.ubuntu }}
+        echo ${{ matrix.package }}
