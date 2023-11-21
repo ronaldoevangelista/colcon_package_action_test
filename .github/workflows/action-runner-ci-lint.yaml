@@ -61,10 +61,8 @@ jobs:
     - name: Set Dynamic Matrix
       id: dynamic-matrix
       run: |
-        matrix_stringifield_object='{"linter":[{"cppcheck","cppcheck"},{"cpplint":"cpplint"}]}'
+        matrix_stringifield_object='{"linter":[{"cppcheck":"cppcheck"},{"cpplint":"cpplint"}]}'
         echo "github-lint-list-env=$matrix_stringifield_object" >> $GITHUB_OUTPUT
-        # matrix-stringifield-object="{\"linter\":[{\"cppcheck\",\"cppcheck\"},{\"cpplint\":\"cpplint\"}]}"
-        # echo "github-lint-list-env=$matrix-stringifield-object" >> $GITHUB_OUTPUT
 
   ament_lint_general:
     name: ament_${{ matrix.linter }}
