@@ -56,13 +56,13 @@ jobs:
   convert-lint-list:
     runs-on: ubuntu-latest
     outputs:
-      lint-list: ${{ steps.dynamic-tmatrix.outputs.github-lint-list-env }}
+      lint-list: ${{ steps.dynamic-matrix.outputs.github-lint-list-env }}
     steps:
     - name: Set Dynamic Matrix
-      id: dynamic-tmatrix
+      id: dynamic-matrix
       run: |
-        matrix-stringified-object="{\"linter\":[{\"cppcheck\",\"cppcheck\"},{\"rucpplintn\":\"cpplint\"}]}"
-        echo "github-lint-list-env=$matrix-stringified-object" >> $GITHUB_OUTPUT
+        matrix-stringifield-object="{\"linter\":[{\"cppcheck\",\"cppcheck\"},{\"cpplint\":\"cpplint\"}]}"
+        echo "github-lint-list-env=$matrix-stringifield-object" >> $GITHUB_OUTPUT
 
   ament_lint_general:
     name: ament_${{ matrix.linter }}
