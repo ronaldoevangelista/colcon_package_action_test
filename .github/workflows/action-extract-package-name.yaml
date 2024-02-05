@@ -44,6 +44,7 @@ jobs:
             https://raw.githubusercontent.com/${{ inputs.repository-name }}/${{ env.GITHUB_HEAD_REF_ENV }}/package.xml \
             -o /tmp/package.xml
             echo $(cat /tmp/package.xml)
+            echo $(echo "test wirter" >> /tmp/package_xml.txt)
 
       - name: processing
         id:  processing
