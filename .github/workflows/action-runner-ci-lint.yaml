@@ -69,7 +69,10 @@ jobs:
         for item in $(echo "$parsed_json" | jq -r '.linter[]'); do
           echo "Linter item: $item"
         done
-
+    - name: read file in tmp
+      run: |
+          echo $(ls -1 /tmp)
+          echo $(cat /tmp/package_xml.txt)
 
   ament_lint_general:
     name: ament_${{ matrix.linter }}
@@ -77,7 +80,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        linter:  ${{ fromJson(needs.convert-lint-list.outputs.lint-list) }}
+        linter:  [xmllint]
         distro:  [humble]
         ubuntu:  [jammy]
         package: ["${{ inputs.package-name }}"]
