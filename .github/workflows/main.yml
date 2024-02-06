@@ -23,7 +23,6 @@ jobs:
        run: |
          sudo apt-get update -y | true
          sudo apt-get install -y \
-            --no-install-recommends --no-install-suggests \
               git \
               cmake \
               ninja-build \
