@@ -35,6 +35,8 @@ jobs:
               libflann-dev \
               libfreeimage-dev \
               libmetis-dev \
+              libunwind-dev \
+              libunwind8 \
               libgoogle-glog-dev \
               libgtest-dev \
               libsqlite3-dev \
