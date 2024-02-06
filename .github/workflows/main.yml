@@ -2,51 +2,64 @@ name: main
 
 on:
   push:
-    branches: ['main']
+    branches: ['*']
   pull_request:
 
 jobs:
   configure:
-    runs-on: ubuntu-latest
-    outputs:
-      matrix: ${{ steps.set-matrix.outputs.matrix }}
-    steps:
-     - name: Checkout to repository
-       uses: actions/checkout@v3
-     -
-      run: |
-        echo $(ls -1)
-     - name: Set matrix data
-       id: set-matrix
-       run: echo "matrix=$(jq -c . < ./config.json)" >> $GITHUB_OUTPUT
-
-  convert-lint-list:
-    runs-on: ubuntu-latest
-    needs: configure
-    strategy:
-      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
-    steps:
-     - run: |
-        for linter_item in ${{ toJson(matrix.linter) }}; do
-          echo "Linter: $linter_item"
-        done
-        echo ${{ matrix.distro }}
-        echo ${{ matrix.ubuntu }}
-        echo ${{ matrix.package }}
-
-  ament_lint_general:
-    name: ament_${{ matrix.linter }}
-    needs: configure
     strategy:
       fail-fast: false
-      matrix: ${{ fromJson(needs.configure.outputs.matrix) }}
-
+      matrix:
+        ubuntu: [jammy]
+        distro: [humble]
     runs-on: ubuntu-latest
     container:
       image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
     steps:
-    -
-      if: ${{ matrix.linter == 'cpplint' || matrix.linter == 'uncrustify' }}
-      name: Set env ${{ matrix.linter }}
-      run: |
-          echo "LINT_ARGUMENTS=--linelength=120" >> $GITHUB_ENV
+     - name: Checkout
+       uses: actions/checkout@v3
+
+     - name: install dependencies
+       run: |
+         sudo apt-get update -y | true
+         sudo apt-get install -y \
+            --no-install-recommends --no-install-suggests \
+              git \
+              cmake \
+              ninja-build \
+              build-essential \
+              libboost-program-options-dev \
+              libboost-filesystem-dev \
+              libboost-graph-dev \
+              libboost-system-dev \
+              libeigen3-dev \
+              libflann-dev \
+              libfreeimage-dev \
+              libmetis-dev \
+              libgoogle-glog-dev \
+              libgtest-dev \
+              libsqlite3-dev \
+              libglew-dev \
+              qtbase5-dev \
+              libqt5opengl5-dev \
+              libcgal-dev \
+              libceres-dev
+
+     - name: update indices
+       run: |
+         sudo apt-get update -y | true
+         sudo apt-get upgrade -y | true
+
+     - name: compile colmap
+       shell: bash
+       run: |
+         mkdir -p /__w/colmap_ws/
+         cd /__w/colmap_ws/
+         git clone https://github.com/colmap/colmap.git
+         cd colmap
+         mkdir build
+         cd build
+         cmake .. -GNinja
+         ninja
+         sudo ninja install
+         colmap -h
