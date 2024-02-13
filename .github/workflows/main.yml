@@ -24,6 +24,9 @@ jobs:
        run: |
           echo $(ls -laF )
           echo $(pwd)
+          echo $(ls -1 )
+          echo $(ls -1 ./* )
+          echo $(ls -1 ./.github )
 
 
      - name: execute publish artifact
