@@ -19,6 +19,12 @@ jobs:
      - name: Checkout
        uses: actions/checkout@v3
 
+     - name: execute publish artifact
+       uses: ./.github/workflows/publish-artifact.yaml
+
+     - name: execute download artifact
+       uses: ./.github/workflows/download-artifact.yaml
+
      - name: install dependencies
        run: |
          sudo apt-get update -y | true
@@ -44,11 +50,14 @@ jobs:
               qtbase5-dev \
               libqt5opengl5-dev \
               libcgal-dev \
-              libceres-dev
+              libceres-dev \
+              libcgal-dev \
+              libfftw3-dev \
+              libclfft-dev
 
      - name: update indices
        run: |
-         sudo apt-get update -y | true
+         sudo apt-get update  -y | true
          sudo apt-get upgrade -y | true
 
      - name: compile colmap

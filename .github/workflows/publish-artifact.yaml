@@ -1,0 +1,22 @@
+name: Steps from A
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Execute A
+        run: |
+          echo "Conteúdo do arquivo A" > a.txt
+          echo "A executado com sucesso!"
+
+      - name: Publicar artefato
+        uses: actions/upload-artifact@v2
+        with:
+          name: a-artifact
+          path: a.txt
