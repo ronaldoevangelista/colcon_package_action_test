@@ -19,14 +19,74 @@ defaults:
 
 jobs:
   job:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
     steps:
-      - name: Execute publish
+      - name: list publish artifact
+        shell: bash
+        run: |
+          echo $(pwd)
+          echo $(ls -1 )
+
+      - name: install dependencies
+        run: |
+          set -x
+          sudo apt-get update -y | true
+          sudo apt-get install -y \
+                git \
+                cmake \
+                ninja-build \
+                build-essential \
+                libboost-program-options-dev \
+                libboost-filesystem-dev \
+                libboost-graph-dev \
+                libboost-system-dev \
+                libeigen3-dev \
+                libflann-dev \
+                libfreeimage-dev \
+                libmetis-dev \
+                libunwind-dev \
+                libunwind8 \
+                libgoogle-glog-dev \
+                libgtest-dev \
+                libsqlite3-dev \
+                libglew-dev \
+                qtbase5-dev \
+                libqt5opengl5-dev \
+                libcgal-dev \
+                libceres-dev \
+                libcgal-dev \
+                libfftw3-dev \
+                libclfft-dev
+
+      - name: clone repositories
+        run: |
+          COMMAND=$(echo "git clone -b 3.7 git@github.com:colmap/colmap.git colmap")
+          echo " Downloading: $COMMAND"
+          $COMMAND
+
+      - name: Configure and build
+        run: |
+          set -x
+          cmake --version
+          mkdir build
+          cd build
+          cmake ../colmap \
+            -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=./install \
+            -DCMAKE_CUDA_ARCHITECTURES=50 \
+            -DTESTS_ENABLED=OFF \
+            -DCUDA_ENABLED=false \
+            -DGUI_ENABLED=false \
+            -DASAN_ENABLED=false
+          ninja -k 10000
+
+      - name: execute publish
         run: |
           echo "Conteúdo do arquivo A" > colmap-artifact.txt
           echo "A executado com sucesso!"
 
-      - name: Publicar artefato
+      - name: publicar artefato
         uses: actions/upload-artifact@v2
         with:
           name: colmap-artifact

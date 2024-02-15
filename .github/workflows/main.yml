@@ -34,7 +34,7 @@ jobs:
 
 
   setup-download-artifact:
-    name: setup publish artifact
+    name: setup download artifact
     needs: [setup-publish-artifact]
     permissions:
       id-token: write
