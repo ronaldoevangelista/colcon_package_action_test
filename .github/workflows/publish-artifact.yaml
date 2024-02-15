@@ -21,10 +21,9 @@ jobs:
   job:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
       - name: Execute publish
         run: |
-          echo "Conteúdo do arquivo A" > a.txt
+          echo "Conteúdo do arquivo A" > colmap-artifact.txt
           echo "A executado com sucesso!"
 
       - name: Publicar artefato

@@ -17,12 +17,8 @@ jobs:
       - name: execute publish artifact
         shell: bash
         run: |
-          echo $(ls -laF )
           echo $(pwd)
           echo $(ls -1 )
-          echo $(ls -1 ./* )
-          echo $(ls -1 ./.github/* )
-          echo $(ls -1 ./.github/workflows/* )
 
   setup-publish-artifact:
     name: setup publish artifact
