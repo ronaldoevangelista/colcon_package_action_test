@@ -3,6 +3,10 @@ name: Steps from A
 on:
   workflow_call:
 
+defaults:
+  run:
+    shell: bash
+
 jobs:
   build:
     runs-on: ubuntu-20.04

@@ -6,22 +6,17 @@ on:
   pull_request:
 
 jobs:
-  configure:
-    strategy:
-      fail-fast: false
-      matrix:
-        ubuntu: [jammy]
-        distro: [humble]
+  setup:
+    name: setup action runner
     runs-on: ubuntu-latest
-    container:
-      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
-    steps:
-     - name: Checkout
-       uses: actions/checkout@v4
 
-     - name: execute publish artifact
-       shell: bash
-       run: |
+    steps:
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: execute publish artifact
+        shell: bash
+        run: |
           echo $(ls -laF )
           echo $(pwd)
           echo $(ls -1 )
@@ -29,59 +24,76 @@ jobs:
           echo $(ls -1 ./.github/* )
           echo $(ls -1 ./.github/workflows/* )
 
+  setup-publish-artifact:
+    name: setup publish artifact
+    needs: [setup]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/publish-artifac.yaml@feat-colmap
 
 
-     - name: execute publish artifact
-       uses: ./.github/workflows/publish-artifact.yaml
+  setup-download-artifact:
+    name: setup publish artifact
+    needs: [setup]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifac.yaml@feat-colmap
 
-     - name: execute download artifact
-       uses: ./.github/workflows/download-artifact.yaml
 
-     - name: install dependencies
-       run: |
-         sudo apt-get update -y | true
-         sudo apt-get install -y \
-              git \
-              cmake \
-              ninja-build \
-              build-essential \
-              libboost-program-options-dev \
-              libboost-filesystem-dev \
-              libboost-graph-dev \
-              libboost-system-dev \
-              libeigen3-dev \
-              libflann-dev \
-              libfreeimage-dev \
-              libmetis-dev \
-              libunwind-dev \
-              libunwind8 \
-              libgoogle-glog-dev \
-              libgtest-dev \
-              libsqlite3-dev \
-              libglew-dev \
-              qtbase5-dev \
-              libqt5opengl5-dev \
-              libcgal-dev \
-              libceres-dev \
-              libcgal-dev \
-              libfftw3-dev \
-              libclfft-dev
 
-     - name: update indices
-       run: |
-         sudo apt-get update  -y | true
-         sudo apt-get upgrade -y | true
+    #  - name:
+    #    uses: ./.github/workflows/publish-artifact.yaml
 
-     - name: compile colmap
-       shell: bash
-       run: |
-         mkdir -p /__w/colmap_ws/
-         cd /__w/colmap_ws/
-         git clone https://github.com/colmap/colmap.git
-         cd colmap
-         mkdir build
-         cd build
-         cmake .. -GNinja
-         ninja
-         sudo ninja install
-         colmap -h
+    #  - name: execute download artifact
+    #    uses: ./.github/workflows/download-artifact.yaml
+
+    #  - name: install dependencies
+    #    run: |
+    #      sudo apt-get update -y | true
+    #      sudo apt-get install -y \
+    #           git \
+    #           cmake \
+    #           ninja-build \
+    #           build-essential \
+    #           libboost-program-options-dev \
+    #           libboost-filesystem-dev \
+    #           libboost-graph-dev \
+    #           libboost-system-dev \
+    #           libeigen3-dev \
+    #           libflann-dev \
+    #           libfreeimage-dev \
+    #           libmetis-dev \
+    #           libunwind-dev \
+    #           libunwind8 \
+    #           libgoogle-glog-dev \
+    #           libgtest-dev \
+    #           libsqlite3-dev \
+    #           libglew-dev \
+    #           qtbase5-dev \
+    #           libqt5opengl5-dev \
+    #           libcgal-dev \
+    #           libceres-dev \
+    #           libcgal-dev \
+    #           libfftw3-dev \
+    #           libclfft-dev
+
+    #  - name: update indices
+    #    run: |
+    #      sudo apt-get update  -y | true
+    #      sudo apt-get upgrade -y | true
+
+    #  - name: compile colmap
+    #    shell: bash
+    #    run: |
+    #      mkdir -p /__w/colmap_ws/
+    #      cd /__w/colmap_ws/
+    #      git clone https://github.com/colmap/colmap.git
+    #      cd colmap
+    #      mkdir build
+    #      cd build
+    #      cmake .. -GNinja
+    #      ninja
+    #      sudo ninja install
+    #      colmap -h
