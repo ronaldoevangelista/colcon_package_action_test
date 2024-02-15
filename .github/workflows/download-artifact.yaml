@@ -1,9 +1,7 @@
 name: Steps from B
 
 on:
-  push:
-    branches:
-      - main
+  workflow_call:
 
 jobs:
   build:

@@ -39,7 +39,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifac.yaml@feat-colmap
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifact.yaml@feat-colmap
 
 
 
