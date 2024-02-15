@@ -58,13 +58,13 @@ jobs:
                 libfftw3-dev \
                 libclfft-dev
 
-      - name: clone repositories
+      - name: clone colmap repository
         run: |
           COMMAND=$(echo "git clone -b 3.7 https://github.com/colmap/colmap.git colmap")
           echo " Downloading: $COMMAND"
           $COMMAND
 
-      - name: Configure and build
+      - name: configure and build
         run: |
           set -x
           cmake --version
@@ -80,15 +80,18 @@ jobs:
             -DGUI_ENABLED=false \
             -DASAN_ENABLED=false
           ninja -k 10000
+          ninja install
 
-      - name: execute publish
+      - name: compress and publish
         run: |
-          echo "Conteúdo do arquivo A" > colmap-artifact.txt
-          echo "A executado com sucesso!"
+          set -x
+          tar -czvf colmap.tar.gz ./install/
+
 
       - name: publicar artefato
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         with:
           name: colmap-artifact
-          path: colmap-artifact.txt
+          path:  colmap.tar.gz
           retention-days: 1
+          overwrite: true

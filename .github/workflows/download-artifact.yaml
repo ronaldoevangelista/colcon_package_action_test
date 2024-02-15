@@ -8,12 +8,13 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Baixar artefato
-        uses: actions/download-artifact@v2
+      - name: download artifact
+        uses: actions/download-artifact@v4
         with:
           name: colmap-artifact
 
-      - name: Execute B
+      - name: extract tar gz archive
         run: |
-          cat colmap-artifact.txt  # Lê o conteúdo do arquivo A
-          echo "B executado com sucesso!"
+           set -x
+           colmap.tar.gz
+           tar -tvf colmap.tar.gz
