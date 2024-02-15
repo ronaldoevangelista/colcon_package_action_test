@@ -1,18 +1,28 @@
-name: Steps from A
+name: execute-publish-artifact
 
 on:
   workflow_call:
+    secrets:
+      SECRET_GITHUB_TOKEN:
+        description: ''
+        required: true
+    inputs:
+      repository-name:
+        required: true
+        type: string
+        description: 'The name of the repository from which to extract dependencies.'
+        default: ${{ github.repository }}
 
 defaults:
   run:
     shell: bash
 
 jobs:
-  build:
-    runs-on: ubuntu-20.04
+  job:
+    runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Execute A
+      - name: Execute publish
         run: |
           echo "Conteúdo do arquivo A" > a.txt
           echo "A executado com sucesso!"

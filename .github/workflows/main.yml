@@ -1,4 +1,4 @@
-name: main
+name: main-action
 
 on:
   push:
@@ -35,7 +35,7 @@ jobs:
 
   setup-download-artifact:
     name: setup publish artifact
-    needs: [setup]
+    needs: [setup-publish-artifact]
     permissions:
       id-token: write
       contents: read
