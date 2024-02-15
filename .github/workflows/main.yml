@@ -31,6 +31,8 @@ jobs:
       id-token: write
       contents: read
     uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/publish-artifact.yaml@feat-colmap
+    with:
+      repository-name: ${{ github.repository }}
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
