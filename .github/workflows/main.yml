@@ -30,7 +30,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/publish-artifac.yaml@feat-colmap
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/publish-artifact.yaml@feat-colmap
 
 
   setup-download-artifact:
@@ -40,60 +40,3 @@ jobs:
       id-token: write
       contents: read
     uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifact.yaml@feat-colmap
-
-
-
-    #  - name:
-    #    uses: ./.github/workflows/publish-artifact.yaml
-
-    #  - name: execute download artifact
-    #    uses: ./.github/workflows/download-artifact.yaml
-
-    #  - name: install dependencies
-    #    run: |
-    #      sudo apt-get update -y | true
-    #      sudo apt-get install -y \
-    #           git \
-    #           cmake \
-    #           ninja-build \
-    #           build-essential \
-    #           libboost-program-options-dev \
-    #           libboost-filesystem-dev \
-    #           libboost-graph-dev \
-    #           libboost-system-dev \
-    #           libeigen3-dev \
-    #           libflann-dev \
-    #           libfreeimage-dev \
-    #           libmetis-dev \
-    #           libunwind-dev \
-    #           libunwind8 \
-    #           libgoogle-glog-dev \
-    #           libgtest-dev \
-    #           libsqlite3-dev \
-    #           libglew-dev \
-    #           qtbase5-dev \
-    #           libqt5opengl5-dev \
-    #           libcgal-dev \
-    #           libceres-dev \
-    #           libcgal-dev \
-    #           libfftw3-dev \
-    #           libclfft-dev
-
-    #  - name: update indices
-    #    run: |
-    #      sudo apt-get update  -y | true
-    #      sudo apt-get upgrade -y | true
-
-    #  - name: compile colmap
-    #    shell: bash
-    #    run: |
-    #      mkdir -p /__w/colmap_ws/
-    #      cd /__w/colmap_ws/
-    #      git clone https://github.com/colmap/colmap.git
-    #      cd colmap
-    #      mkdir build
-    #      cd build
-    #      cmake .. -GNinja
-    #      ninja
-    #      sudo ninja install
-    #      colmap -h
