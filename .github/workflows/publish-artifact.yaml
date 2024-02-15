@@ -60,7 +60,7 @@ jobs:
 
       - name: clone repositories
         run: |
-          COMMAND=$(echo "git clone -b 3.7 git@github.com:colmap/colmap.git colmap")
+          COMMAND=$(echo "git clone -b 3.7 https://github.com/colmap/colmap.git colmap")
           echo " Downloading: $COMMAND"
           $COMMAND
 
