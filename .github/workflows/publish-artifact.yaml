@@ -85,6 +85,8 @@ jobs:
       - name: compress and publish
         run: |
           set -x
+          echo $(pwd)
+          echo $(ls -1 )          
           tar -czvf colmap.tar.gz ./install/
 
 
