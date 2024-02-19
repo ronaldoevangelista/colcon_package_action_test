@@ -75,28 +75,6 @@ jobs:
           ninja -k 10000
           ninja install
 
-      - name: configure files
-        id: configure-files
-        run: |
-          rm -rf configuration.json
-          rm -rf dependencies.txt
-          output-path=$(echo "$(pwd)")
-          echo "LOCAL_DIR=$output-path" >> $GITHUB_ENV
-          echo " ${{ inputs.dependencies-list }}" >  dependencies.txt
-          json_file=$(cat <<EOF
-          {
-            "Package": "${{ env.REPOSITORY_LIST }}",
-            "Version": "${{ inputs.repository-version }}",
-            "Architecture": "amd64",
-            "Maintainer": "${{ env.REPOSITORY_LIST }}",
-            "Description": "${{ env.REPOSITORY_LIST }} Debian package"
-          }
-          EOF
-          )
-          echo "$json_file" > configuration.json
-          echo $(cat configuration.json)
-          echo $(cat dependencies.txt)
-
       - name: prepare package contents
         run: |
           mkdir -p .debpkg/
