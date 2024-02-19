@@ -41,7 +41,8 @@ jobs:
       - name: install dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
-          echo "DEPENDENCIES_LIST=$dependencies_list_escaped" >> $GITHUB_ENV
+          deb_depends_list=$(echo -e "${{ inputs.dependencies-list }}" | tr ' ' ', ')
+          echo "DEPENDENCIES_LIST=$deb_depends_list" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
@@ -85,13 +86,13 @@ jobs:
         id: build-deb
         uses: jiro4989/build-deb-action@v3
         with:
-          package: '${{ env.PACKAGE_NAME }}'
+          package: "${{ env.PACKAGE_NAME }}"
           package_root: .debpkg
-          maintainer: '${{ env.PACKAGE_NAME }}'
-          version: '${{ inputs.repository-version }}'
-          arch: 'amd64'
-          depends:  '${{ env.DEPENDENCIES_LIST }}'
-          desc: 'See: ${{ env.REPOSITORY_URL }}'
+          maintainer: "${{ env.PACKAGE_NAME }}"
+          version: "${{ inputs.repository-version }}"
+          arch: "amd64"
+          depends: "${{ env.DEPENDENCIES_LIST }}"
+          desc: "See: ${{ env.REPOSITORY_URL }}"
 
       - name: Upload deb package
         uses: actions/upload-artifact@v4
