@@ -38,10 +38,6 @@ jobs:
       repository-package: "${{ needs.setup-dependencies.outputs.repository-thirdparty-list }}"
       repository-version: "3.7"
       dependencies-list: |
-              git
-              cmake
-              ninja-build
-              build-essential
               libboost-program-options-dev
               libboost-filesystem-dev
               libboost-graph-dev
