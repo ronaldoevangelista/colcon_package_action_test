@@ -73,13 +73,20 @@ jobs:
           ninja -k 10000
           ninja install
 
+      - name: configure files
+        shell: bash
+        run: |
+          rm -rf /tmp/configuration.json
+          rm -rf /tmp/dependencies.txt
+          echo "${{ inputs.repository-package }}" >  /tmp/dependencies.txt
+          echo $(cat /tmp/dependencies.txt)
+
       - name: compress and publish
         run: |
           set -x
           echo $(pwd)
-          echo $(ls -1 ./* )
-          echo $(ls -1 ./install/)
-      #     tar -czvf colmap.tar.gz install/
+          echo $(ls -1 ./install/*)
+          tar -czvf colmap.tar.gz ./install/
 
       # - name: Generate Debian control File
       #   uses: Nightwind-Developments/debian-control-file-builder@latest
