@@ -42,9 +42,11 @@ jobs:
       - name: install dependencies
         run: |
           set -x
-          dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
+          dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' '
+          dependencies_list_escaped_quotes="$dependencies_list_escaped//\'"
+          echo $dependencies_list_escaped_quotes
           sudo apt-get update -y | true
-          sudo apt-get install -y "$dependencies_list_escaped//\'"
+          sudo apt-get install -y $dependencies_list_escaped
 
 
 
