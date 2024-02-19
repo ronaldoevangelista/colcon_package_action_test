@@ -44,7 +44,7 @@ jobs:
           set -x
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' '\\')
           sudo apt-get update -y | true
-          sudo apt-get install -y $dependencies_list_escaped
+          sudo apt-get install -y "${{ inputs.dependencies-list }}"
 
 
 
