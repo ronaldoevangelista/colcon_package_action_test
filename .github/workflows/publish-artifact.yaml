@@ -41,9 +41,11 @@ jobs:
       - name: install dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
-          deb_depends_list=$(echo -e "$dependencies_list_escaped" | tr ' ' ', ' | sed 's/,$//')
+          deb_depends_list=$(echo  "$dependencies_list_escaped" | tr ' ' ',')
+          deb_depends_comma=$(echo "$deb_depends_list" | sed 's/,$//')
           echo "$deb_depends_list"
-          echo "PACKAGE_DEPENDS=$deb_depends_list" >> $GITHUB_ENV
+          echo "$deb_depends_comma"
+          echo "PACKAGE_DEPENDS=$deb_depends_comma" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
