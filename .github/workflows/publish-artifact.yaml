@@ -78,7 +78,8 @@ jobs:
       - name: prepare package contents
         run: |
           mkdir -p .debpkg/
-          cp ./install/* .debpkg/
+          echo $(ls -1)
+          scp ./install/* .debpkg/
 
       - name: Build deb package
         id: build-deb
