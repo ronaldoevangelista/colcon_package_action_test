@@ -74,11 +74,12 @@ jobs:
           ninja install
 
       - name: configure files
-        shell: bash
+        id: configure-files
         run: |
-          rm -rf /tmp/configuration.json
-          rm -rf /tmp/dependencies.txt
-          echo " ${{ inputs.dependencies-list }}" >  /tmp/dependencies.txt
+          rm -rf configuration.json
+          rm -rf dependencies.txt
+          echo "LOCAL_DIR=$pwd" >> $GITHUB_ENV
+          echo " ${{ inputs.dependencies-list }}" >  dependencies.txt
           json_file=$(cat <<EOF
           {
             "Package": "${{ env.REPOSITORY_LIST }}",
@@ -89,13 +90,14 @@ jobs:
           }
           EOF
           )
-          echo "$json_file" > /tmp/configuration.json
-          echo $(cat /tmp/dependencies.txt)
-          echo $(cat /tmp/configuration.json)
+          echo "$json_file" > configuration.json
+          echo $(cat configuration.json)
+          echo $(cat dependencies.txt)
 
       - name: compress and publish
+        id: compress-files
         run: |
-          tar -czvf colmap.tar.gz ./install/
+          tar -czf colmap.tar.gz ./install/
 
       - name: publicar artefato
         uses: actions/upload-artifact@v4
@@ -109,7 +111,7 @@ jobs:
         uses: Nightwind-Developments/debian-control-file-builder@latest
         id: deb-control
         with:
-          config-file: '/tmp/configuration.json'
-          deps-file: '/tmp/dependencies.txt'
-          output-path: './'
+          config-file: 'configuration.json'
+          deps-file: 'dependencies.txt'
+          output-path: '${{ env.LOCAL_DIR }}'
           case-sensitive-keys: 'true'
