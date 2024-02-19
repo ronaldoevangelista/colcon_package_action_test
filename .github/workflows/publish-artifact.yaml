@@ -85,7 +85,7 @@ jobs:
         id: build-deb
         uses: jiro4989/build-deb-action@v3
         with:
-          package: "${{ env.REPOSITORY_LIST }}"
+          package: ${{ env.PACKAGE_NAME }}
           package_root: .debpkg
           maintainer: ${{ env.PACKAGE_NAME }}
           version: ${{ inputs.repository-version }}
