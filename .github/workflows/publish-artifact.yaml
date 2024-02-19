@@ -44,41 +44,9 @@ jobs:
           set -x
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
           dependencies_install=$(echo "sudo apt-get install -y $dependencies_list_escaped ")
-          echo "list > $dependencies_install"
-          COMMAND="${dependencies_install//\'}"
-          echo "COMMAND > $COMMAND"
+          apt_install_command="${dependencies_install//\'}"
+          sudo apt-get update -y | true && $apt_install_command
 
-
-      # sudo apt-get update -y | true
-      # sudo apt-get install -y $dependencies_list_escaped
-
-
-
-      #           git \
-      #           cmake \
-      #           ninja-build \
-      #           build-essential \
-      #           libboost-program-options-dev \
-      #           libboost-filesystem-dev \
-      #           libboost-graph-dev \
-      #           libboost-system-dev \
-      #           libeigen3-dev \
-      #           libflann-dev \
-      #           libfreeimage-dev \
-      #           libmetis-dev \
-      #           libunwind-dev \
-      #           libunwind8 \
-      #           libgoogle-glog-dev \
-      #           libgtest-dev \
-      #           libsqlite3-dev \
-      #           libglew-dev \
-      #           qtbase5-dev \
-      #           libqt5opengl5-dev \
-      #           libcgal-dev \
-      #           libceres-dev \
-      #           libcgal-dev \
-      #           libfftw3-dev \
-      #           libclfft-dev
 
       # - name: clone colmap repository
       #   run: |
