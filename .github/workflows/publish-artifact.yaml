@@ -57,7 +57,6 @@ jobs:
 
       - name: configure and build
         run: |
-          set -x
           cmake --version
           mkdir -p build install
           echo $(ls -1)
@@ -96,7 +95,6 @@ jobs:
 
       - name: compress and publish
         run: |
-          set -x
           tar -czvf colmap.tar.gz ./install/
 
       - name: publicar artefato
@@ -107,11 +105,11 @@ jobs:
           retention-days: 1
           overwrite: true
 
-      # - name: Generate Debian control File
-      #   uses: Nightwind-Developments/debian-control-file-builder@latest
-      #   id: deb-control
-      #   with:
-      #     config-file: './configuration.json'
-      #     deps-file: './dependencies.txt'
-      #     output-path: '.'
-      #     case-sensitive-keys: 'true'
+      - name: create debian file
+        uses: Nightwind-Developments/debian-control-file-builder@latest
+        id: deb-control
+        with:
+          config-file: '/tmp/configuration.json'
+          deps-file: '/tmp/dependencies.txt'
+          output-path: './'
+          case-sensitive-keys: 'true'
