@@ -61,7 +61,7 @@ jobs:
       - name: clone colmap repository
         run: |
           git config --global advice.detachedHead false
-          COMMAND=$(echo "  3.7 https://github.com/colmap/colmap.git colmap")
+          COMMAND=$(echo "git clone -b 3.7 https://github.com/colmap/colmap.git colmap")
           echo " Downloading: $COMMAND"
           $COMMAND
 
