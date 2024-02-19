@@ -14,29 +14,63 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: execute publish artifact
-        shell: bash
-        run: |
-          echo $(pwd)
-          echo $(ls -1 )
+  setup-dependencies:
+    name: setup dependencies
+    needs: [setup]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-extract-dependencies.yaml@feat-colmap
+    with:
+      repository-name: ${{ github.repository }}
+      head-ref:  ${{ github.head_ref }}
+    secrets:
+      SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
   setup-publish-artifact:
     name: setup publish artifact
-    needs: [setup]
+    needs: [setup, setup-dependencies]
     permissions:
       id-token: write
       contents: read
     uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/publish-artifact.yaml@feat-colmap
     with:
-      repository-name: ${{ github.repository }}
+      repository-package: "${{ needs.setup-dependencies.outputs.repository-thirdparty-list }}"
+      repository-version: "3.7"
+      dependencies-list: |
+              git
+              cmake
+              ninja-build
+              build-essential
+              libboost-program-options-dev
+              libboost-filesystem-dev
+              libboost-graph-dev
+              libboost-system-dev
+              libeigen3-dev
+              libflann-dev
+              libfreeimage-dev
+              libmetis-dev
+              libunwind-dev
+              libunwind8
+              libgoogle-glog-dev
+              libgtest-dev
+              libsqlite3-dev
+              libglew-dev
+              qtbase5-dev
+              libqt5opengl5-dev
+              libcgal-dev
+              libceres-dev
+              libcgal-dev
+              libfftw3-dev
+              libclfft-dev
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
 
-  setup-download-artifact:
-    name: setup download artifact
-    needs: [setup-publish-artifact]
-    permissions:
-      id-token: write
-      contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifact.yaml@feat-colmap
+  # setup-download-artifact:
+  #   name: setup download artifact
+  #   needs: [setup-publish-artifact]
+  #   permissions:
+  #     id-token: write
+  #     contents: read
+  #   uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifact.yaml@feat-colmap

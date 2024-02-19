@@ -7,11 +7,21 @@ on:
         description: ''
         required: true
     inputs:
-      repository-name:
+      repository-package:
         required: true
         type: string
-        description: 'The name of the repository from which to extract dependencies.'
+        description: 'The name of the repository.'
         default: ${{ github.repository }}
+      repository-version:
+        required: false
+        type: string
+        description: 'The version number.'
+        default: "0.1.0"
+      dependencies-list:
+        description: "List of packages dependencies."
+        required: true
+        type: string
+        default: ""
 
 defaults:
   run:
@@ -24,6 +34,9 @@ jobs:
       - name: list publish artifact
         shell: bash
         run: |
+          echo ${{ inputs.repository-package }}
+          echo ${{ inputs.repository-version }}
+          echo ${{ inputs.dependencies-list }}
           echo $(pwd)
           echo $(ls -1 )
 

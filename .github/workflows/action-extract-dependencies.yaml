@@ -1,0 +1,106 @@
+# Workflow: action-extract-dependencies
+#
+# This GitHub Actions workflow, named "action-extract-dependencies,"
+# is designed to be triggered on workflow calls.
+# It extracts dependencies from a specified repository using inputs provided during the workflow call.
+# The resulting list of repository names is then outputted.
+#
+## Trigger
+# This workflow is triggered by a `workflow_call` event.
+
+name: action-extract-dependencies
+
+on:
+  workflow_call:
+    secrets:
+      SECRET_GITHUB_TOKEN:
+        description: ''
+        required: true
+    inputs:
+      repository-name:
+        required: true
+        type: string
+        description: 'The name of the repository from which to extract dependencies.'
+        default: ${{ github.repository }}
+      head-ref:
+        required: true
+        type: string
+        description: 'The head reference to be considered. Branch Name'
+        default: ${{ github.head_ref }}
+    outputs:
+      repository-name-list:
+        description: "The repository list output"
+        value: ${{ jobs.job.outputs.output-repository }}
+      repository-thirdparty-list:
+        description: "The third-party repository list output"
+        value: ${{ jobs.job.outputs.output-thirdparty }}
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-latest
+    outputs:
+      output-repository: ${{ steps.mapping.outputs.repository-name-list }}
+      output-branch: ${{ steps.mapping.outputs.repository-name-list }}
+      output-thirdparty: ${{ steps.filtering.outputs.thirdparty-packages-list }}
+    steps:
+      - name: downloading
+        run: |
+          github_ref_name=${{ inputs.head-ref }}
+          if [ -z "${{ inputs.head-ref }}" ]; then
+            github_ref_name=${{ github.ref }}
+            github_ref_name=${github_ref_name#"refs/heads/"}
+            echo "default branch $github_ref_name"
+          fi
+          rm -rf /tmp/dependencies.repos
+          curl -H \
+            "Authorization: token  ${{ secrets.SECRET_GITHUB_TOKEN }}" \
+            https://raw.githubusercontent.com/${{ inputs.repository-name }}/$github_ref_name/dependencies.repos \
+            -o /tmp/dependencies.repos
+            echo $(cat /tmp/dependencies.repos)
+
+      - name: processing
+        id:  processing
+        run: |
+          AWK_BRANCH_OUTPUT=$(awk '/url:/ {url=$2} /version:/ {printf "%s|%s,", url, $2}' /tmp/dependencies.repos )
+          echo "AWK_BRANCH_OUTPUT=$AWK_BRANCH_OUTPUT" >> $GITHUB_ENV
+
+      - name: filtering
+        id:  filtering
+        run: |
+          echo  "${{ env.AWK_BRANCH_OUTPUT }}"
+          IFS=','
+          read -ra urls <<< "${{ env.AWK_BRANCH_OUTPUT }}"
+          filtered_ronaldoevangelista_packages=()
+          filtered_thirdparty_packages=()
+          for url in "${urls[@]}"; do
+              if [[ $url == *"https://github.com/ronaldoevangelista/"* ]]; then
+                  filtered_ronaldoevangelista_packages+=("$url")
+              else
+                  filtered_thirdparty_packages+=("$url")
+              fi
+          done
+          filtered_packages=$(IFS=','; echo "${filtered_ronaldoevangelista_packages[*]}")
+          thirdparty_packages=$(IFS=','; echo "${filtered_thirdparty_packages[*]}")
+          echo "FILTERED_PACKAGES_LIST=$filtered_packages" >> $GITHUB_ENV
+          THIRDPARTY_PACKAGES_LIST=$(echo "$thirdparty_packages" | sed 's/,$//')
+          echo "thirdparty-packages-list=$THIRDPARTY_PACKAGES_LIST" >> $GITHUB_OUTPUT
+
+      - name: mapping
+        id:  mapping
+        run: |
+          echo  "${{ env.FILTERED_PACKAGES_LIST }}"
+          IFS=','
+          read -ra TOKENS <<< "${{ env.FILTERED_PACKAGES_LIST }}"
+          for module_name in ${TOKENS[@]}
+            do
+             echo ${module_name}
+             PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
+             REPOSITORY_NAME=$(echo $PACKAGE | sed 's/\.git//g')
+             REPOSITORY_VALUES="$REPOSITORY_VALUES$REPOSITORY_NAME,"
+          done
+          REPOSITORY_VALUES_LIST=$(echo "$REPOSITORY_VALUES" | sed 's/,$//')
+          echo "repository-name-list=$REPOSITORY_VALUES_LIST" >> $GITHUB_OUTPUT
