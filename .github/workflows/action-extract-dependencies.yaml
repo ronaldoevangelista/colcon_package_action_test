@@ -97,7 +97,6 @@ jobs:
           read -ra TOKENS <<< "${{ env.FILTERED_PACKAGES_LIST }}"
           for module_name in ${TOKENS[@]}
             do
-             echo ${module_name}
              PACKAGE=$(echo ${module_name} | sed 's#https://github.com/${{ github.repository_owner }}/##')
              REPOSITORY_NAME=$(echo $PACKAGE | sed 's/\.git//g')
              REPOSITORY_VALUES="$REPOSITORY_VALUES$REPOSITORY_NAME,"

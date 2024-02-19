@@ -34,9 +34,9 @@ jobs:
       - name: list publish artifact
         shell: bash
         run: |
-          echo ${{ inputs.repository-package }}
-          echo ${{ inputs.repository-version }}
-          echo ${{ inputs.dependencies-list }}
+          echo "package ${{ inputs.repository-package }}"
+          echo "version ${{ inputs.repository-version }}"
+          echo "list ${{ inputs.dependencies-list }}"
 
 
       # - name: install dependencies
