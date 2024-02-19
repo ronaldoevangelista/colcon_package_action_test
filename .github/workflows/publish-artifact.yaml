@@ -45,7 +45,7 @@ jobs:
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
           dependencies_install=$(echo "sudo apt-get install -y $dependencies_list_escaped ")
           echo "list > $dependencies_install"
-          COMMAND="$dependencies_install//\'"
+          COMMAND="${dependencies_install//\'}"
           echo "COMMAND > $COMMAND"
 
 
