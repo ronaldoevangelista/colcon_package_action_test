@@ -38,7 +38,6 @@ jobs:
           echo "version ${{ inputs.repository-version }}"
           echo "list ${{ inputs.dependencies-list }}"
 
-
       - name: install dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
@@ -65,7 +64,7 @@ jobs:
           cmake ../colmap \
             -GNinja \
             -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=./install \
+            -DCMAKE_INSTALL_PREFIX=../install \
             -DCMAKE_CUDA_ARCHITECTURES=50 \
             -DTESTS_ENABLED=OFF \
             -DCUDA_ENABLED=false \
@@ -79,7 +78,7 @@ jobs:
           set -x
           echo $(pwd)
           echo $(ls -1 ./* )
-          echo $(ls -1 ./install )
+          echo $(ls -1 ./install/)
       #     tar -czvf colmap.tar.gz install/
 
       # - name: Generate Debian control File
