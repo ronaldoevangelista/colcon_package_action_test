@@ -16,5 +16,5 @@ jobs:
       - name: extract tar gz archive
         run: |
            set -x
-           colmap.tar.gz
+           echo $(ls -1 )
            tar -tvf colmap.tar.gz
