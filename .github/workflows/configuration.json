@@ -1,0 +1,7 @@
+{
+  "Package": "colmap",
+  "Version": "3.7.0",
+  "Architecture": "armhf",
+  "Maintainer": "colmap",
+  "Description": "colmap Debian package"
+}

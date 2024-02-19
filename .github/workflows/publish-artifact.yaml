@@ -91,6 +91,14 @@ jobs:
           echo $(ls -1 ./* )
           tar -czvf colmap.tar.gz install/
 
+      - name: Generate Debian control File
+        uses: Nightwind-Developments/debian-control-file-builder@latest
+        id: deb-control
+        with:
+          config-file: './configuration.json'
+          deps-file: './dependencies.txt'
+          output-path: '.'
+          case-sensitive-keys: 'true'
 
       - name: publicar artefato
         uses: actions/upload-artifact@v4
