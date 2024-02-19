@@ -78,7 +78,8 @@ jobs:
         run: |
           rm -rf configuration.json
           rm -rf dependencies.txt
-          echo "LOCAL_DIR=$pwd" >> $GITHUB_ENV
+          output-path=$(echo "$(pwd)")
+          echo "LOCAL_DIR=$output-path" >> $GITHUB_ENV
           echo " ${{ inputs.dependencies-list }}" >  dependencies.txt
           json_file=$(cat <<EOF
           {
