@@ -79,7 +79,7 @@ jobs:
         run: |
           mkdir -p .debpkg/
           echo $(ls -1)
-          scp ./install/* .debpkg/
+          scp -r install/ .debpkg/
 
       - name: Build deb package
         id: build-deb
