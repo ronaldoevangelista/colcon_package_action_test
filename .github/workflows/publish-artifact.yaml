@@ -94,18 +94,18 @@ jobs:
           echo $(cat configuration.json)
           echo $(cat dependencies.txt)
 
-      - name: compress and publish
-        id: compress-files
-        run: |
-          tar -czf colmap.tar.gz ./install/
+      # - name: compress and publish
+      #   id: compress-files
+      #   run: |
+      #     tar -czf colmap.tar.gz ./install/
 
-      - name: publicar artefato
-        uses: actions/upload-artifact@v4
-        with:
-          name: colmap-artifact
-          path:  colmap.tar.gz
-          retention-days: 1
-          overwrite: true
+      # - name: publicar artefato
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: colmap-artifact
+      #     path:  colmap.tar.gz
+      #     retention-days: 1
+      #     overwrite: true
 
       - name: create debian file
         uses: Nightwind-Developments/debian-control-file-builder@latest
@@ -115,3 +115,16 @@ jobs:
           deps-file: 'dependencies.txt'
           output-path: '${{ env.LOCAL_DIR }}'
           case-sensitive-keys: 'true'
+
+      - name: Print Output Variable
+        run: |
+          echo "${{ steps.deb-control.outputs.output_variable }}"
+
+      - name: upload generated control file
+        uses: actions/upload-artifact@v4
+        with:
+          name: generated-control-file
+          path: "${{ steps.deb-control.outputs.control_file_path }}"
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 1
