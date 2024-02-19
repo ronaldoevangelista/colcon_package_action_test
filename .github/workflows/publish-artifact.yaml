@@ -42,6 +42,7 @@ jobs:
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
           deb_depends_list=$(echo -e "$dependencies_list_escaped" | tr ' ' ', ' | sed 's/,$//')
+          echo "$deb_depends_list"
           echo "PACKAGE_DEPENDS=$deb_depends_list" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
@@ -78,6 +79,8 @@ jobs:
 
       - name: prepare package contents
         run: |
+          echo $(pwd)
+          echo "${{ env.PACKAGE_DEPENDS }}"
           mkdir -p .debpkg/
           scp -r install/ .debpkg/
 
