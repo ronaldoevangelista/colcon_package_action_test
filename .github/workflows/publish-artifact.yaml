@@ -60,7 +60,8 @@ jobs:
 
       - name: clone colmap repository
         run: |
-          COMMAND=$(echo "git clone -b 3.7 https://github.com/colmap/colmap.git colmap")
+          git config --global advice.detachedHead false
+          COMMAND=$(echo "  3.7 https://github.com/colmap/colmap.git colmap")
           echo " Downloading: $COMMAND"
           $COMMAND
 
@@ -68,7 +69,8 @@ jobs:
         run: |
           set -x
           cmake --version
-          mkdir build
+          mkdir -p build install
+          echo $(ls -1)
           cd build
           cmake ../colmap \
             -GNinja \
@@ -86,7 +88,7 @@ jobs:
         run: |
           set -x
           echo $(pwd)
-          echo $(ls -1 )          
+          echo $(ls -1 )
           tar -czvf colmap.tar.gz ./install/
 
 
