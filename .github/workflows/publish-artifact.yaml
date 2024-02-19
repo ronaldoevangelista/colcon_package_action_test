@@ -88,8 +88,8 @@ jobs:
         run: |
           set -x
           echo $(pwd)
-          echo $(ls -1 )
-          tar -czvf colmap.tar.gz ./install/
+          echo $(ls -1 ./* )
+          tar -czvf colmap.tar.gz install/
 
 
       - name: publicar artefato
