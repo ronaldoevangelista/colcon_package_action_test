@@ -46,7 +46,7 @@ jobs:
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
 
-      - name: clone colmap repository
+      - name: clone repository
         run: |
           IFS='|' read -r repository_url repository_branch <<< "${{ inputs.repository-package }}"
           package_name=$(echo "$repository_url" | cut -d'/' -f4 | cut -d'.' -f1)
@@ -55,31 +55,31 @@ jobs:
           echo " Downloading: $COMMAND"
           $COMMAND
 
+      - name: configure and build
+        run: |
+          set -x
+          cmake --version
+          mkdir -p build install
+          echo $(ls -1)
+          cd build
+          cmake ../colmap \
+            -GNinja \
+            -DCMAKE_BUILD_TYPE=Release \
+            -DCMAKE_INSTALL_PREFIX=./install \
+            -DCMAKE_CUDA_ARCHITECTURES=50 \
+            -DTESTS_ENABLED=OFF \
+            -DCUDA_ENABLED=false \
+            -DGUI_ENABLED=false \
+            -DASAN_ENABLED=false
+          ninja -k 10000
+          ninja install
 
-      # - name: configure and build
-      #   run: |
-      #     set -x
-      #     cmake --version
-      #     mkdir -p build install
-      #     echo $(ls -1)
-      #     cd build
-      #     cmake ../colmap \
-      #       -GNinja \
-      #       -DCMAKE_BUILD_TYPE=Release \
-      #       -DCMAKE_INSTALL_PREFIX=./install \
-      #       -DCMAKE_CUDA_ARCHITECTURES=50 \
-      #       -DTESTS_ENABLED=OFF \
-      #       -DCUDA_ENABLED=false \
-      #       -DGUI_ENABLED=false \
-      #       -DASAN_ENABLED=false
-      #     ninja -k 10000
-      #     ninja install
-
-      # - name: compress and publish
-      #   run: |
-      #     set -x
-      #     echo $(pwd)
-      #     echo $(ls -1 ./* )
+      - name: compress and publish
+        run: |
+          set -x
+          echo $(pwd)
+          echo $(ls -1 ./* )
+          echo $(ls -1 ./install )
       #     tar -czvf colmap.tar.gz install/
 
       # - name: Generate Debian control File
