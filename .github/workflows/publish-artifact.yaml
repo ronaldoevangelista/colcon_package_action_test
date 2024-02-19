@@ -41,6 +41,7 @@ jobs:
       - name: install dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
+          echo "DEPENDENCIES_LIST=$dependencies_list_escaped" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
@@ -50,6 +51,7 @@ jobs:
           IFS='|' read -r repository_url repository_branch <<< "${{ inputs.repository-package }}"
           package_name=$(echo "$repository_url" | cut -d'/' -f4 | cut -d'.' -f1)
           echo "PACKAGE_NAME=$package_name" >> $GITHUB_ENV
+          echo "REPOSITORY_URL=$repository_url" >> $GITHUB_ENV
           git config --global advice.detachedHead false
           COMMAND=$(echo "git clone -b $repository_branch $repository_url $package_name")
           echo " Downloading: $COMMAND"
@@ -95,6 +97,32 @@ jobs:
           echo $(cat configuration.json)
           echo $(cat dependencies.txt)
 
+      - name: prepare package contents
+        run: |
+          mkdir -p .debpkg/
+          cp ./install/* .debpkg/
+
+      - name: Build deb package
+        id: build-deb
+        uses: jiro4989/build-deb-action@v3
+        with:
+          package: "${{ env.REPOSITORY_LIST }}"
+          package_root: .debpkg
+          maintainer: ${{ env.PACKAGE_NAME }}
+          version: ${{ inputs.repository-version }}
+          arch: 'amd64'
+          depends:  ${{ env.DEPENDENCIES_LIST }}'
+          desc: 'See: ${{ env.REPOSITORY_URL }}'
+
+      - name: Upload deb package
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{steps.build-deb.outputs.file_name}}
+          path: ${{steps.build-deb.outputs.file_name}}
+          if-no-files-found: error
+          overwrite: true
+          retention-days: 1
+
       # - name: compress and publish
       #   id: compress-files
       #   run: |
@@ -108,24 +136,24 @@ jobs:
       #     retention-days: 1
       #     overwrite: true
 
-      - name: create debian file
-        uses: Nightwind-Developments/debian-control-file-builder@latest
-        id: deb-control
-        with:
-          config-file: 'configuration.json'
-          deps-file: 'dependencies.txt'
-          output-path: '${{ env.LOCAL_DIR }}'
-          case-sensitive-keys: 'true'
+      # - name: create debian file
+      #   uses: Nightwind-Developments/debian-control-file-builder@latest
+      #   id: deb-control
+      #   with:
+      #     config-file: 'configuration.json'
+      #     deps-file: 'dependencies.txt'
+      #     output-path: '${{ env.LOCAL_DIR }}'
+      #     case-sensitive-keys: 'true'
 
-      - name: Print Output Variable
-        run: |
-          echo "${{ steps.deb-control.outputs.output_variable }}"
+      # - name: Print Output Variable
+      #   run: |
+      #     echo "${{ steps.deb-control.outputs.output_variable }}"
 
-      - name: upload generated control file
-        uses: actions/upload-artifact@v4
-        with:
-          name: generated-control-file
-          path: "${{ steps.deb-control.outputs.control_file_path }}"
-          if-no-files-found: error
-          overwrite: true
-          retention-days: 1
+      # - name: upload generated control file
+      #   uses: actions/upload-artifact@v4
+      #   with:
+      #     name: generated-control-file
+      #     path: "${{ steps.deb-control.outputs.control_file_path }}"
+      #     if-no-files-found: error
+      #     overwrite: true
+      #     retention-days: 1
