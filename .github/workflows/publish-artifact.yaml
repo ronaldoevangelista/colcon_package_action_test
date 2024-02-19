@@ -49,6 +49,7 @@ jobs:
         run: |
           IFS='|' read -r repository_url repository_branch <<< "${{ inputs.repository-package }}"
           package_name=$(echo "$repository_url" | cut -d'/' -f4 | cut -d'.' -f1)
+          echo "PACKAGE_NAME=$package_name" >> $GITHUB_ENV
           git config --global advice.detachedHead false
           COMMAND=$(echo "git clone -b $repository_branch $repository_url $package_name")
           echo " Downloading: $COMMAND"
@@ -78,15 +79,33 @@ jobs:
         run: |
           rm -rf /tmp/configuration.json
           rm -rf /tmp/dependencies.txt
-          echo "${{ inputs.repository-package }}" >  /tmp/dependencies.txt
+          echo " ${{ inputs.dependencies-list }}" >  /tmp/dependencies.txt
+          json_file=$(cat <<EOF
+          {
+            "Package": "${{ env.REPOSITORY_LIST }}",
+            "Version": "${{ inputs.repository-version }}",
+            "Architecture": "amd64",
+            "Maintainer": "${{ env.REPOSITORY_LIST }}",
+            "Description": "${{ env.REPOSITORY_LIST }} Debian package"
+          }
+          EOF
+          )
+          echo "$json_file" > /tmp/configuration.json
           echo $(cat /tmp/dependencies.txt)
+          echo $(cat /tmp/configuration.json)
 
       - name: compress and publish
         run: |
           set -x
-          echo $(pwd)
-          echo $(ls -1 ./install/*)
           tar -czvf colmap.tar.gz ./install/
+
+      - name: publicar artefato
+        uses: actions/upload-artifact@v4
+        with:
+          name: colmap-artifact
+          path:  colmap.tar.gz
+          retention-days: 1
+          overwrite: true
 
       # - name: Generate Debian control File
       #   uses: Nightwind-Developments/debian-control-file-builder@latest
@@ -96,11 +115,3 @@ jobs:
       #     deps-file: './dependencies.txt'
       #     output-path: '.'
       #     case-sensitive-keys: 'true'
-
-      # - name: publicar artefato
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: colmap-artifact
-      #     path:  colmap.tar.gz
-      #     retention-days: 1
-      #     overwrite: true
