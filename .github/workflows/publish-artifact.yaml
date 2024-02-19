@@ -85,12 +85,12 @@ jobs:
         id: build-deb
         uses: jiro4989/build-deb-action@v3
         with:
-          package: ${{ env.PACKAGE_NAME }}
+          package: '${{ env.PACKAGE_NAME }}'
           package_root: .debpkg
-          maintainer: ${{ env.PACKAGE_NAME }}
-          version: ${{ inputs.repository-version }}
+          maintainer: '${{ env.PACKAGE_NAME }}'
+          version: '${{ inputs.repository-version }}'
           arch: 'amd64'
-          depends:  ${{ env.DEPENDENCIES_LIST }}
+          depends:  '${{ env.DEPENDENCIES_LIST }}'
           desc: 'See: ${{ env.REPOSITORY_URL }}'
 
       - name: Upload deb package
