@@ -42,10 +42,10 @@ jobs:
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
           deb_depends_list=$(echo  "$dependencies_list_escaped" | tr ' ' ',')
-          deb_depends_comma=$(echo "$deb_depends_list" | sed 's/,$//')
           echo "$deb_depends_list"
-          echo "$deb_depends_comma"
-          echo "PACKAGE_DEPENDS=$deb_depends_comma" >> $GITHUB_ENV
+          dependencies_without_last_comma=$(echo "$dependencies_string" | awk '{sub(/,$/, ""); print}')
+          echo "$dependencies_without_last_comma"
+          echo "PACKAGE_DEPENDS=$dependencies_without_last_comma" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
@@ -82,7 +82,7 @@ jobs:
       - name: prepare package contents
         run: |
           echo $(pwd)
-          echo "${{ env.PACKAGE_DEPENDS }}"
+          echo "\n${{ env.PACKAGE_DEPENDS }}"
           mkdir -p .debpkg/
           scp -r install/ .debpkg/
 
