@@ -1,3 +1,4 @@
+# https://github.com/marketplace/actions/build-deb-action
 name: execute-publish-artifact
 
 on:
@@ -22,6 +23,10 @@ on:
         required: true
         type: string
         default: ""
+    outputs:
+      artifact-path:
+        description: "artifact path"
+        value: ${{ jobs.job.outputs.artifact-path }}
 
 defaults:
   run:
@@ -30,23 +35,16 @@ defaults:
 jobs:
   job:
     runs-on: ubuntu-22.04
+    outputs:
+      artifact-path: ${{steps.build-deb.outputs.file_name}}
     steps:
-      - name: list publish artifact
-        shell: bash
-        run: |
-          echo "package ${{ inputs.repository-package }}"
-          echo "version ${{ inputs.repository-version }}"
-          echo "list ${{ inputs.dependencies-list }}"
-
       - name: install dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr -s '\n' ' ')
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           deb_depends_list=$(echo  "$dependencies_list_escaped" | tr ' ' ',')
-          echo "$deb_depends_list"
           dependencies_without_last_comma=$(echo "$deb_depends_list" | awk '{sub(/,$/, ""); print}')
-          echo "$dependencies_without_last_comma"
           sudo apt-get update -y | true && $apt_install_command
           echo "PACKAGE_DEPENDS=$dependencies_without_last_comma" >> $GITHUB_ENV
 
@@ -58,7 +56,6 @@ jobs:
           echo "REPOSITORY_URL=$repository_url" >> $GITHUB_ENV
           git config --global advice.detachedHead false
           COMMAND=$(echo "git clone -b $repository_branch $repository_url $package_name")
-          echo " Downloading: $COMMAND"
           $COMMAND
 
       - name: configure and build
@@ -83,10 +80,12 @@ jobs:
         run: |
           echo $(pwd)
           echo "\n${{ env.PACKAGE_DEPENDS }}"
-          mkdir -p .debpkg/
-          scp -r install/ .debpkg/
+          mkdir -p .debpkg/usr
+          for x in `/bin/ls install/`; do
+            scp -r install/$x .debpkg/usr/
+          done
 
-      - name: Build deb package
+      - name: build deb package
         id: build-deb
         uses: jiro4989/build-deb-action@v3
         with:
@@ -98,7 +97,7 @@ jobs:
           depends: "${{ env.PACKAGE_DEPENDS }}"
           desc: "See: ${{ env.REPOSITORY_URL }}"
 
-      - name: Upload deb package
+      - name: upload deb package
         uses: actions/upload-artifact@v4
         with:
           name: ${{steps.build-deb.outputs.file_name}}
@@ -106,38 +105,3 @@ jobs:
           if-no-files-found: error
           overwrite: true
           retention-days: 1
-
-      # - name: compress and publish
-      #   id: compress-files
-      #   run: |
-      #     tar -czf colmap.tar.gz ./install/
-
-      # - name: publicar artefato
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: colmap-artifact
-      #     path:  colmap.tar.gz
-      #     retention-days: 1
-      #     overwrite: true
-
-      # - name: create debian file
-      #   uses: Nightwind-Developments/debian-control-file-builder@latest
-      #   id: deb-control
-      #   with:
-      #     config-file: 'configuration.json'
-      #     deps-file: 'dependencies.txt'
-      #     output-path: '${{ env.LOCAL_DIR }}'
-      #     case-sensitive-keys: 'true'
-
-      # - name: Print Output Variable
-      #   run: |
-      #     echo "${{ steps.deb-control.outputs.output_variable }}"
-
-      # - name: upload generated control file
-      #   uses: actions/upload-artifact@v4
-      #   with:
-      #     name: generated-control-file
-      #     path: "${{ steps.deb-control.outputs.control_file_path }}"
-      #     if-no-files-found: error
-      #     overwrite: true
-      #     retention-days: 1
