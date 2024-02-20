@@ -43,12 +43,13 @@ jobs:
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr '\n' ' ')
           deb_depends_list=$(echo  "$dependencies_list_escaped" | tr ' ' ',')
           echo "$deb_depends_list"
-          dependencies_without_last_comma=$(echo "$dependencies_string" | awk '{sub(/,$/, ""); print}')
+          dependencies_without_last_comma=$(echo "$deb_depends_list" | awk '{sub(/,$/, ""); print}')
           echo "$dependencies_without_last_comma"
           echo "PACKAGE_DEPENDS=$dependencies_without_last_comma" >> $GITHUB_ENV
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
           apt_install_command="${dependencies_install//\'}"
           sudo apt-get update -y | true && $apt_install_command
+          exit
 
       - name: clone repository
         run: |
