@@ -105,8 +105,8 @@ jobs:
           depends: "${{ env.PACKAGE_DEPENDS }}"
           desc: "See: ${{ env.REPOSITORY_URL }}"
 
-      - name: upload deb package
-        id: install-dependencies
+      - name: upload deb artifact
+        id: upload-deb-artifact
         uses: actions/upload-artifact@v4
         with:
           name: ${{steps.build-deb-package.outputs.file_name}}
