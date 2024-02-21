@@ -12,7 +12,7 @@ on:
         required: true
         type: string
         description: 'The name of the repository.'
-        default: " "
+        default: ""
       repository-version:
         required: false
         type: string
@@ -45,6 +45,15 @@ jobs:
     outputs:
       artifact-path: ${{steps.build-deb-package.outputs.file_name}}
     steps:
+      - name: check condition
+        id: check-condition
+        if: "${{ inputs.repository-package != '' }}"
+        run: |
+          if [ "${{ inputs.repository-package }}" =  "" ]; then
+            echo "aborting the workflow, the repository-package is blank."
+            exit 1
+          fi
+
       - name: install dependencies
         id: install-dependencies
         run: |
