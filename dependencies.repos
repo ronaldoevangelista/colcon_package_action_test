@@ -1,8 +1,4 @@
 repositories:
-  colmap:
-    type: git
-    url: https://github.com/colmap/colmap.git
-    version: 3.7
   gazebo_tank_plugin:
     type: git
     url: https://github.com/ronaldoevangelista/gazebo_tank_plugin.git
