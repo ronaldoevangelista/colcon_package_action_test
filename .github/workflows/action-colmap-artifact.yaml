@@ -1,5 +1,5 @@
 # https://github.com/marketplace/actions/build-deb-action
-name: execute-publish-artifact
+name: action-colmap-artifact
 
 on:
   workflow_call:
@@ -12,17 +12,24 @@ on:
         required: true
         type: string
         description: 'The name of the repository.'
-        default: ${{ github.repository }}
+        default: " "
       repository-version:
         required: false
         type: string
         description: 'The version number.'
         default: "0.1.0"
       dependencies-list:
-        description: "List of packages dependencies."
+        description: "List of compiled packages that are dependencies installed via apt."
         required: true
         type: string
         default: ""
+      retention-days:
+        description: >
+            Duration after which artifact will expire in days.
+            default 1 day.
+        required: false
+        type: number
+        default: 1
     outputs:
       artifact-path:
         description: "artifact path"
@@ -36,9 +43,10 @@ jobs:
   job:
     runs-on: ubuntu-22.04
     outputs:
-      artifact-path: ${{steps.build-deb.outputs.file_name}}
+      artifact-path: ${{steps.build-deb-package.outputs.file_name}}
     steps:
       - name: install dependencies
+        id: install-dependencies
         run: |
           dependencies_list_escaped=$(echo -e "${{ inputs.dependencies-list }}" | tr -s '\n' ' ')
           dependencies_install=$(echo "sudo apt-get install -y git cmake ninja-build build-essential $dependencies_list_escaped ")
@@ -49,6 +57,7 @@ jobs:
           echo "PACKAGE_DEPENDS=$dependencies_without_last_comma" >> $GITHUB_ENV
 
       - name: clone repository
+        id: clone-repository
         run: |
           IFS='|' read -r repository_url repository_branch <<< "${{ inputs.repository-package }}"
           package_name=$(echo "$repository_url" | cut -d'/' -f4 | cut -d'.' -f1)
@@ -59,10 +68,9 @@ jobs:
           $COMMAND
 
       - name: configure and build
+        id: configure-build
         run: |
-          cmake --version
           mkdir -p build install
-          echo $(ls -1)
           cd build
           cmake ../colmap \
             -GNinja \
@@ -77,8 +85,8 @@ jobs:
           ninja install
 
       - name: prepare package contents
+        id: prepare-package-contents
         run: |
-          echo $(pwd)
           echo "\n${{ env.PACKAGE_DEPENDS }}"
           mkdir -p .debpkg/usr
           for x in `/bin/ls install/`; do
@@ -86,7 +94,7 @@ jobs:
           done
 
       - name: build deb package
-        id: build-deb
+        id: build-deb-package
         uses: jiro4989/build-deb-action@v3
         with:
           package: "${{ env.PACKAGE_NAME }}"
@@ -98,10 +106,11 @@ jobs:
           desc: "See: ${{ env.REPOSITORY_URL }}"
 
       - name: upload deb package
+        id: install-dependencies
         uses: actions/upload-artifact@v4
         with:
-          name: ${{steps.build-deb.outputs.file_name}}
-          path: ${{steps.build-deb.outputs.file_name}}
+          name: ${{steps.build-deb-package.outputs.file_name}}
+          path: ${{steps.build-deb-package.outputs.file_name}}
           if-no-files-found: error
           overwrite: true
-          retention-days: 1
+          retention-days: ${{ inputs.retention-days }}
