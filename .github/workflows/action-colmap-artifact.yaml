@@ -44,16 +44,9 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       artifact-path: ${{steps.build-deb-package.outputs.file_name}}
+    env:
+      ACTIONS_RUNNER_DEBUG: true
     steps:
-      - name: check condition
-        id: check-condition
-        if: "${{ inputs.repository-package != '' }}"
-        run: |
-          if [ "${{ inputs.repository-package }}" =  "" ]; then
-            echo "aborting the workflow, the repository-package is blank."
-            exit 1
-          fi
-
       - name: install dependencies
         id: install-dependencies
         run: |
@@ -81,7 +74,7 @@ jobs:
         run: |
           mkdir -p build install
           cd build
-          cmake ../colmap \
+          cmake ../${{ PACKAGE_NAME }} \
             -GNinja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=../install \
@@ -90,6 +83,7 @@ jobs:
             -DCUDA_ENABLED=false \
             -DGUI_ENABLED=false \
             -DASAN_ENABLED=false
+            -DCGAL_DATA_DIR=.
           ninja -k 10000
           ninja install
 
@@ -97,29 +91,32 @@ jobs:
         id: prepare-package-contents
         run: |
           echo "\n${{ env.PACKAGE_DEPENDS }}"
-          mkdir -p .debpkg/usr
+          mkdir -p .debpkg/usr/local
           for x in `/bin/ls install/`; do
-            scp -r install/$x .debpkg/usr/
+            cp -r install/$x .debpkg/usr/local
           done
 
       - name: build deb package
         id: build-deb-package
-        uses: jiro4989/build-deb-action@v3
-        with:
-          package: "${{ env.PACKAGE_NAME }}"
-          package_root: .debpkg
-          maintainer: "${{ env.PACKAGE_NAME }}"
-          version: "${{ inputs.repository-version }}"
-          arch: "amd64"
-          depends: "${{ env.PACKAGE_DEPENDS }}"
-          desc: "See: ${{ env.REPOSITORY_URL }}"
+        run: |
+          mkdir -p .debpkg/DEBIAN
+          cat <<EOF > .debpkg/DEBIAN/control
+          Package: ${{ env.PACKAGE_NAME }}
+          Version: ${{ inputs.repository-version }}
+          Architecture: amd64
+          Maintainer: ${{ env.PACKAGE_NAME }}
+          Description: See: ${{ env.REPOSITORY_URL }}
+          EOF
+
+          dpkg-deb --build package
+          mv package.deb ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
 
       - name: upload deb artifact
         id: upload-deb-artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{steps.build-deb-package.outputs.file_name}}
-          path: ${{steps.build-deb-package.outputs.file_name}}
+          name: ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
+          path: ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
           if-no-files-found: error
           overwrite: true
           retention-days: ${{ inputs.retention-days }}
