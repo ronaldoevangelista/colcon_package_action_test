@@ -90,7 +90,7 @@ jobs:
       - name: prepare package contents
         id: prepare-package-contents
         run: |
-          echo "\n${{ env.PACKAGE_DEPENDS }}"
+          set -x
           mkdir -p .debpkg/usr/local
           for x in `/bin/ls install/`; do
             cp -r install/$x .debpkg/usr/local
@@ -106,6 +106,7 @@ jobs:
           Version: ${{ inputs.repository-version }}
           Architecture: amd64
           Maintainer: ${{ env.PACKAGE_NAME }}
+          Depends: ${{ env.PACKAGE_DEPENDS }}
           Description: See: ${{ env.REPOSITORY_URL }}
           EOF
 
