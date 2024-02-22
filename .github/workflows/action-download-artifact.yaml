@@ -22,6 +22,11 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
       - name: download artifact
+        id: download-deb-artifact
+        run: |
+          echo "${{ inputs.artifact-package }}"
+
+      - name: download artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact-package }}
@@ -30,6 +35,7 @@ jobs:
         run: |
            set -x
            echo $(ls -1 )
-           sudo chown $(whoami):$(whoami) ${{ inputs.artifact-package }}
-           sudo chmod +x ${{ inputs.artifact-package }}
-           sudo apt-get install -f ./${{ inputs.artifact-package }}
+           echo "${{ steps.download-deb-artifact.download-path }}"
+           sudo chown $(whoami):$(whoami) "${{ steps.download-deb-artifact.download-path }}"
+          #  sudo chmod +x ${{ inputs.artifact-package }}
+          #  sudo apt-get install -f ./${{ inputs.artifact-package }}
