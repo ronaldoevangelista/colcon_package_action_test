@@ -30,3 +30,6 @@ jobs:
         run: |
            set -x
            echo $(ls -1 )
+           sudo chown $(whoami):$(whoami) ${{ inputs.artifact-package }}
+           sudo chmod +x ${{ inputs.artifact-package }}
+           sudo apt-get install -f ./${{ inputs.artifact-package }}
