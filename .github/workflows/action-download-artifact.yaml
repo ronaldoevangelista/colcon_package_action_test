@@ -39,7 +39,7 @@ jobs:
            echo $(pwd)
            echo $(ls -1)
            echo "${{ env.ARTIFACT_PATH }}"
-           sudo chown $(whoami):$(whoami) ${{ env.ARTIFACT_PATH }}
-           sudo chmod +x ${{ env.ARTIFACT_PATH }}
+           sudo chown $(whoami):$(whoami) "${{ env.ARTIFACT_PATH }}"
+           sudo chmod +x "${{ env.ARTIFACT_PATH }}"
            echo $(ls -laF)
           #  sudo apt-get install -f ./${{ inputs.artifact-package }}
