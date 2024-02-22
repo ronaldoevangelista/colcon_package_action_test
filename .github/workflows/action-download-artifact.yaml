@@ -1,0 +1,32 @@
+name: action-download-artifact
+
+on:
+  workflow_call:
+    secrets:
+      SECRET_GITHUB_TOKEN:
+        description: ''
+        required: true
+    inputs:
+      artifact-package:
+        required: true
+        type: string
+        description: 'The name of the package.'
+        default: ""
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  job:
+    runs-on: ubuntu-22.04
+    steps:
+      - name: download artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: ${{ inputs.artifact-package }}
+
+      - name: extract tar gz archive
+        run: |
+           set -x
+           echo $(ls -1 )

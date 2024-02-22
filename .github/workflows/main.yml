@@ -62,11 +62,14 @@ jobs:
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 
-
-  # setup-download-artifact:
-  #   name: setup download artifact
-  #   needs: [setup-publish-artifact]
-  #   permissions:
-  #     id-token: write
-  #     contents: read
-  #   uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/download-artifact.yaml@feat-colmap
+  setup-download-artifact:
+    name: setup download artifact
+    needs: [setup-publish-artifact]
+    permissions:
+      id-token: write
+      contents: read
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-download-artifact.yaml@feat-colmap
+    with:
+      artifact-package: "${{ needs.setup-publish-artifact.outputs.artifact-path }}"
+    secrets:
+      SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
