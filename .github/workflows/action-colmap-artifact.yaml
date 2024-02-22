@@ -90,7 +90,6 @@ jobs:
       - name: prepare package contents
         id: prepare-package-contents
         run: |
-          set -x
           mkdir -p .debpkg/usr/local
           for x in `/bin/ls install/`; do
             cp -r install/$x .debpkg/usr/local
@@ -99,7 +98,6 @@ jobs:
       - name: build deb package
         id: build-deb-package
         run: |
-          set -x
           mkdir -p .debpkg/DEBIAN
           cat <<EOF > .debpkg/DEBIAN/control
           Package: ${{ env.PACKAGE_NAME }}
@@ -109,7 +107,6 @@ jobs:
           Depends: ${{ env.PACKAGE_DEPENDS }}
           Description: See: ${{ env.REPOSITORY_URL }}
           EOF
-
           dpkg-deb --build .debpkg
           mv .debpkg.deb ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
 
@@ -126,6 +123,5 @@ jobs:
       - name: load download path
         id: load-download-path
         run: |
-          set -x
-          echo "${{ steps.upload-deb-artifact.outputs.download-path }}"
-          echo "artifact-download-path=${{ steps.upload-deb-artifact.outputs.download-path }}" >> $GITHUB_OUTPUT
+          echo "${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb"
+          echo "artifact-download-path=${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb" >> $GITHUB_OUTPUT
