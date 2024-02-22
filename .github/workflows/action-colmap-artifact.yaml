@@ -43,7 +43,7 @@ jobs:
   job:
     runs-on: ubuntu-22.04
     outputs:
-      artifact-path: ${{steps.build-deb-package.outputs.file_name}}
+      artifact-path: ${{ steps.load-download-path.outputs.artifact-download-path }}
     env:
       ACTIONS_RUNNER_DEBUG: true
     steps:
@@ -122,3 +122,10 @@ jobs:
           if-no-files-found: error
           overwrite: true
           retention-days: ${{ inputs.retention-days }}
+
+      - name: load download path
+        id: load-download-path
+        run: |
+          set -x
+          echo "${{ steps.upload-deb-artifact.outputs.download-path }}"
+          echo "artifact-download-path=${{ steps.upload-deb-artifact.outputs.download-path }}" >> $GITHUB_OUTPUT
