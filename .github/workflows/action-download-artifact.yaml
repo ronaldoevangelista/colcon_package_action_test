@@ -24,18 +24,21 @@ jobs:
       - name: download artifact
         id: download-deb-artifact
         run: |
-          echo "${{ inputs.artifact-package }}"
+          echo "inputs.artifact-package: ${{ inputs.artifact-package }}"
 
       - name: download artifact
         uses: actions/download-artifact@v4
         with:
           name: ${{ inputs.artifact-package }}
+          path: ${{ inputs.artifact-package }}
 
       - name: extract tar gz archive
         run: |
            set -x
-           echo $(ls -1 )
-           echo "${{ steps.download-deb-artifact.download-path }}"
-           sudo chown $(whoami):$(whoami) "${{ steps.download-deb-artifact.download-path }}"
+           echo $(pwd)
+           echo $(ls -1)
+
+          #  echo "${{ steps.download-deb-artifact.download-path }}"
+          #  sudo chown $(whoami):$(whoami) "${{ steps.download-deb-artifact.download-path }}"
           #  sudo chmod +x ${{ inputs.artifact-package }}
           #  sudo apt-get install -f ./${{ inputs.artifact-package }}

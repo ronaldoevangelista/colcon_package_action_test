@@ -123,5 +123,4 @@ jobs:
       - name: load download path
         id: load-download-path
         run: |
-          echo "${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb"
           echo "artifact-download-path=${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb" >> $GITHUB_OUTPUT
