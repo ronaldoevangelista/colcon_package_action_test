@@ -25,6 +25,7 @@ jobs:
         id: download-deb-artifact
         run: |
           echo "inputs.artifact-package: ${{ inputs.artifact-package }}"
+          echo "ARTIFACT_PATH=${{ inputs.artifact-package }}" >> $GITHUB_OUTPUT
 
       - name: download artifact
         uses: actions/download-artifact@v4
@@ -37,8 +38,8 @@ jobs:
            set -x
            echo $(pwd)
            echo $(ls -1)
-
-          #  echo "${{ steps.download-deb-artifact.download-path }}"
-          #  sudo chown $(whoami):$(whoami) "${{ steps.download-deb-artifact.download-path }}"
-          #  sudo chmod +x ${{ inputs.artifact-package }}
+           echo "${{ env.ARTIFACT_PATH }}"
+           sudo chown $(whoami):$(whoami) ${{ env.ARTIFACT_PATH }}
+           sudo chmod +x ${{ env.ARTIFACT_PATH }}
+           echo $(ls -laF)
           #  sudo apt-get install -f ./${{ inputs.artifact-package }}
