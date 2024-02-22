@@ -24,7 +24,6 @@ jobs:
       - name: download artifact
         id: download-deb-artifact
         run: |
-          echo "inputs.artifact-package: ${{ inputs.artifact-package }}"
           echo "ARTIFACT_PATH=${{ inputs.artifact-package }}" >> $GITHUB_ENV
 
       - name: download artifact
@@ -32,12 +31,9 @@ jobs:
         with:
           name: ${{ inputs.artifact-package }}
 
-      - name: extract tar gz archive
+      - name: install ${{ env.ARTIFACT_PATH }}
         run: |
-           set -x
-           echo $(pwd)
-           echo $(ls -1)
-           echo "${{ env.ARTIFACT_PATH }}"
+           sudo apt-get update
            sudo chown $(whoami):$(whoami) "${{ env.ARTIFACT_PATH }}"
            sudo chmod +x ${{ env.ARTIFACT_PATH }}
            sudo apt-get install -f ./${{ env.ARTIFACT_PATH }}
