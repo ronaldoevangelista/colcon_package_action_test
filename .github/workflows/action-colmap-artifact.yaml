@@ -99,6 +99,7 @@ jobs:
       - name: build deb package
         id: build-deb-package
         run: |
+          set -x
           mkdir -p .debpkg/DEBIAN
           cat <<EOF > .debpkg/DEBIAN/control
           Package: ${{ env.PACKAGE_NAME }}
@@ -108,8 +109,8 @@ jobs:
           Description: See: ${{ env.REPOSITORY_URL }}
           EOF
 
-          dpkg-deb --build package
-          mv package.deb ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
+          dpkg-deb --build .debpkg
+          mv .debpkg.deb ${{ env.PACKAGE_NAME }}_${{ inputs.repository-version }}_amd64.deb
 
       - name: upload deb artifact
         id: upload-deb-artifact
