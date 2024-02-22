@@ -82,7 +82,7 @@ jobs:
             -DTESTS_ENABLED=OFF \
             -DCUDA_ENABLED=false \
             -DGUI_ENABLED=false \
-            -DASAN_ENABLED=false
+            -DASAN_ENABLED=false \
             -DCGAL_DATA_DIR=.
           ninja -k 10000
           ninja install
