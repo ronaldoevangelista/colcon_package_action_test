@@ -74,7 +74,7 @@ jobs:
         run: |
           mkdir -p build install
           cd build
-          cmake ../${{ PACKAGE_NAME }} \
+          cmake ../${{ env.PACKAGE_NAME }} \
             -GNinja \
             -DCMAKE_BUILD_TYPE=Release \
             -DCMAKE_INSTALL_PREFIX=../install \
