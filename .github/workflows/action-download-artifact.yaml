@@ -33,6 +33,7 @@ jobs:
 
       - name: install ${{ env.ARTIFACT_PATH }}
         run: |
+           sudo apt-cache search libunwind
            sudo apt-get update
            sudo chown $(whoami):$(whoami) "${{ env.ARTIFACT_PATH }}"
            sudo chmod +x ${{ env.ARTIFACT_PATH }}
