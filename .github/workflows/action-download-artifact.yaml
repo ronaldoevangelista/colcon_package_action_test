@@ -36,7 +36,7 @@ jobs:
            sudo apt-cache search libunwind
            sudo apt-get update
            sudo apt-get upgrade -y
-           sudo apt-get install -y libunwind-dev libunwind8 
+           # sudo apt-get install -y libunwind-dev libunwind8 
            sudo chown $(whoami):$(whoami) "${{ env.ARTIFACT_PATH }}"
            sudo chmod +x ${{ env.ARTIFACT_PATH }}
-           sudo apt-get install -f ./${{ env.ARTIFACT_PATH }}
+           sudo apt-get install -f -y ./${{ env.ARTIFACT_PATH }}
