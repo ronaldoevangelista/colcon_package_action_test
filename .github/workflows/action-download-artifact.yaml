@@ -25,6 +25,11 @@ jobs:
         id: download-deb-artifact
         run: |
           echo "ARTIFACT_PATH=${{ inputs.artifact-package }}" >> $GITHUB_ENV
+      - name: install jq
+        run: |
+          sudo apt-get update -y | true
+          sudo apt-get install -y jq
+          sudo apt-get install -y libunwind-dev libunwind8
 
       - name: download artifact
         uses: actions/download-artifact@v4
@@ -33,10 +38,7 @@ jobs:
 
       - name: install ${{ env.ARTIFACT_PATH }}
         run: |
-           sudo apt-cache search libunwind
-           sudo apt-get update
-           sudo apt-get upgrade -y
-           # sudo apt-get install -y libunwind-dev libunwind8 
            sudo chown $(whoami):$(whoami) "${{ env.ARTIFACT_PATH }}"
            sudo chmod +x ${{ env.ARTIFACT_PATH }}
            sudo apt-get install -f -y ./${{ env.ARTIFACT_PATH }}
+           echo $(ls -1 /usr/local/*)

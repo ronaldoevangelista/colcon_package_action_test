@@ -93,6 +93,7 @@ jobs:
           mkdir -p .debpkg/usr/local
           for x in `/bin/ls install/`; do
             cp -r install/$x .debpkg/usr/local
+            echo "install/$x"
           done
 
       - name: build deb package

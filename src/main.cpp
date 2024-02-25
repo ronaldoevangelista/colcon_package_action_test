@@ -13,6 +13,11 @@
 // limitations under the License.
 
 #include <memory>
+#include <cstdlib>
+#include <iostream>
+
+#include <colmap/util/option_manager.h>
+#include <colmap/util/string.h>
 
 #include "colcon_package_action_test/lambda.hpp"
 #include "rclcpp/rclcpp.hpp"
@@ -22,5 +27,16 @@ int main(int argc, char * argv[])
   rclcpp::init(argc, argv);
   rclcpp::spin(std::make_shared<MinimalPublisher>());
   rclcpp::shutdown();
-  return 0;
+
+  colmap::InitializeGlog(argv);
+
+  std::string message;
+  colmap::OptionManager options;
+  options.AddRequiredOption("message", &message);
+  options.Parse(argc, argv);
+
+  std::cout << colmap::StringPrintf("Hello %s!", message.c_str()) << std::endl;
+
+
+  return EXIT_SUCCESS;
 }

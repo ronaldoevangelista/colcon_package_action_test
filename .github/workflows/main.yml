@@ -33,7 +33,7 @@ jobs:
     permissions:
       id-token: write
       contents: read
-    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-colmap-artifact.yaml@feat-colmap
+    uses: ronaldoevangelista/colcon_package_action_test/.github/workflows/action-third-party-artifact.yaml@feat-colmap
     with:
       repository-package: "${{ needs.setup-dependencies.outputs.repository-thirdparty-list }}"
       repository-version: "3.7"
