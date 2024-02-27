@@ -59,6 +59,21 @@ jobs:
               libcgal-dev
               libfftw3-dev
               libclfft-dev
+      string-build: |
+              mkdir -p build install &&
+              cd build &&
+              cmake ../colmap \
+              -GNinja \
+              -DCMAKE_BUILD_TYPE=Release \
+              -DCMAKE_INSTALL_PREFIX=../install \
+              -DCMAKE_CUDA_ARCHITECTURES=50 \
+              -DTESTS_ENABLED=OFF \
+              -DCUDA_ENABLED=false \
+              -DGUI_ENABLED=false \
+              -DASAN_ENABLED=false \
+              -DCGAL_DATA_DIR=. &&
+              ninja -k 10000 &&
+              ninja install
     secrets:
       SECRET_GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
 

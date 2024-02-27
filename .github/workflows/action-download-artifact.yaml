@@ -19,7 +19,15 @@ defaults:
 
 jobs:
   job:
+    strategy:
+      fail-fast: false
+      matrix:
+        ubuntu: [jammy]
+        distro: [humble]
     runs-on: ubuntu-22.04
+    container:
+      image: rostooling/setup-ros-docker:ubuntu-${{ matrix.ubuntu }}-latest
+
     steps:
       - name: download artifact
         id: download-deb-artifact
@@ -30,6 +38,12 @@ jobs:
           sudo apt-get update -y | true
           sudo apt-get install -y jq
           sudo apt-get install -y libunwind-dev libunwind8
+      - name: checkout
+        uses: actions/checkout@v4
+
+      - name: create workspace
+        run: |
+          mkdir -p /__w/ros_ws/src
 
       - name: download artifact
         uses: actions/download-artifact@v4
@@ -42,3 +56,18 @@ jobs:
            sudo chmod +x ${{ env.ARTIFACT_PATH }}
            sudo apt-get install -f -y ./${{ env.ARTIFACT_PATH }}
            echo $(ls -1 /usr/local/*)
+
+      - name: setup ros
+        uses: ros-tooling/setup-ros@0.7.1
+        with:
+          required-ros-distributions: ${{ matrix.distro }}
+
+      - name: rosdep update
+        working-directory: /__w/ros_ws
+        shell: bash
+        run: |
+          rosdep update
+          source /opt/ros/humble/setup.bash
+          rosdep install -r --from-paths src \
+             --ignore-src --skip-keys 'rti-connext-dds-5.3.1 ' \
+             --rosdistro  ${{ matrix.distro }} -y

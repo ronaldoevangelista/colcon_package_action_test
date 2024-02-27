@@ -5,24 +5,30 @@ on:
   workflow_call:
     secrets:
       SECRET_GITHUB_TOKEN:
-        description: ''
+        description: ""
         required: true
     inputs:
       repository-package:
         required: true
         type: string
-        description: 'The name of the repository.'
+        description: "The name of the repository."
         default: ""
       repository-version:
         required: false
         type: string
-        description: 'The version number.'
+        description: "The version number."
         default: "0.1.0"
       dependencies-list:
         description: "List of compiled packages that are dependencies installed via apt."
         required: true
         type: string
         default: ""
+      string-build:
+          description: >
+            Set essential parameters and commands for compiling and installing a project using CMake.
+          required: true
+          type: string
+          default: ""
       retention-days:
         description: >
             Duration after which artifact will expire in days.
@@ -68,6 +74,15 @@ jobs:
           git config --global advice.detachedHead false
           COMMAND=$(echo "git clone -b $repository_branch $repository_url $package_name")
           $COMMAND
+
+      - name: process input build
+        id: process-input-build
+        run: |
+          echo ${{ inputs.string-build }}
+          cleaned_cmake_param=$(echo -e "${{ inputs.string-build }}" | tr -s ' ' | sed ':a;N;$!ba;s/\n/ /g')
+          cmake_build_param=$(echo "$cleaned_cmake_param")
+          echo "$cmake_build_param"
+
 
       - name: configure and build
         id: configure-build
