@@ -75,32 +75,16 @@ jobs:
           COMMAND=$(echo "git clone -b $repository_branch $repository_url $package_name")
           $COMMAND
 
-      - name: process input build
-        id: process-input-build
+      - name: process cmake input
+        id: process-cmake-input
         run: |
-          echo ${{ inputs.string-build }}
-          cleaned_cmake_param=$(echo -e "${{ inputs.string-build }}" | tr -s ' ' | sed ':a;N;$!ba;s/\n/ /g')
-          cmake_build_param=$(echo "$cleaned_cmake_param")
-          echo "$cmake_build_param"
-
+          cleaned_cmake_input=$(echo -e "${{ inputs.string-build }}" | tr -s ' ' | sed ':a;N;$!ba;s/\n/ /g')
+          echo "CMAKE_INPUT_BUILD_=$cleaned_cmake_input" >> $GITHUB_ENV
 
       - name: configure and build
         id: configure-build
         run: |
-          mkdir -p build install
-          cd build
-          cmake ../${{ env.PACKAGE_NAME }} \
-            -GNinja \
-            -DCMAKE_BUILD_TYPE=Release \
-            -DCMAKE_INSTALL_PREFIX=../install \
-            -DCMAKE_CUDA_ARCHITECTURES=50 \
-            -DTESTS_ENABLED=OFF \
-            -DCUDA_ENABLED=false \
-            -DGUI_ENABLED=false \
-            -DASAN_ENABLED=false \
-            -DCGAL_DATA_DIR=.
-          ninja -k 10000
-          ninja install
+          ${{ env.CMAKE_INPUT_BUILD_ }}
 
       - name: prepare package contents
         id: prepare-package-contents
